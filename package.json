@@ -1,0 +1,42 @@
+{
+  "name": "poc",
+  "version": "1.0.0",
+  "description": "Proof of concepts",
+  "main": "index.js",
+  "dependencies": {
+    "cors": "2.8.5",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.26.0",
+    "express": "4.18.1"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.13",
+    "@types/node": "17.0.31",
+    "@typescript-eslint/eslint-plugin": "5.22.0",
+    "@typescript-eslint/parser": "5.22.0",
+    "eslint": "8.15.0",
+    "eslint-plugin-simple-import-sort": "7.0.0",
+    "prettier": "2.6.2",
+    "ts-node": "10.7.0",
+    "typescript": "4.6.4"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "format": "eslint src/**/*.ts --fix",
+    "lint": "eslint src/**/*.ts",
+    "start": "ts-node ./src/main.ts",
+    "start:prod": "npm run build && node ./dist/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BA-LouisAndrew/poc.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BA-LouisAndrew/poc/issues"
+  },
+  "homepage": "https://github.com/BA-LouisAndrew/poc#readme"
+}
