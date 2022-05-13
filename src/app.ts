@@ -22,3 +22,10 @@ app.use("/docs", swaggerUi.serve, async (_req: Request, res: Response) => {
 })
 
 RegisterRoutes(app)
+
+/**
+ * SSE -> Non-REST compliant endpoints
+ */
+app.get("/users", (_, response: Response) => {
+  response.send("Hi!")
+})
