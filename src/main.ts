@@ -1,15 +1,7 @@
-import cors from "cors"
-import express, { Request, Response } from "express"
+import { app } from "./app"
 
-const app = express()
+const port = process.env.PORT || 3000
 
-app.use(cors())
-app.use(express.json())
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Application works!")
-})
-
-app.listen(3000, () => {
-  console.log("Application started on port 3000!")
+app.listen(port, () => {
+  console.log("app listening on " + port)
 })
