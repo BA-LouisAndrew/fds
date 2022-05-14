@@ -1,37 +1,39 @@
 import { Blocking, BlockingId } from "../routes/blocking/blocking"
+import { DataStore } from "./data/dataStore"
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export class RulesEngine {
-  blockings: Blocking[]
-
-  constructor() {
-    this.blockings = []
+  private async _getBlocking(id: BlockingId): Promise<Blocking> {
+    return await DataStore.instance.get(id)
   }
 
-  private _getBlocking(id: BlockingId): Blocking | undefined {
-    console.log(this.blockings)
-    return this.blockings.find((blocking) => blocking.id === id)
+  private async _setBlocking(id: BlockingId, blocking: Blocking | null): Promise<void> {
+    if (!blocking) {
+      return await DataStore.instance.delete(id)
+    }
+
+    return await DataStore.instance.set(id, blocking)
   }
 
-  public getBlocking(id: BlockingId): Blocking | undefined {
+  public async getBlocking(id: BlockingId): Promise<Blocking> {
     const blocking = this._getBlocking(id)
     return blocking
   }
 
-  public createBlocking(id: BlockingId) {
+  public async createBlocking(id: BlockingId) {
     const newBlocking: Blocking = { id, value: 0 }
-    this.blockings.push(newBlocking)
+    await this._setBlocking(id, newBlocking)
     this.createBlockerThread(newBlocking)
 
     return newBlocking
   }
 
-  deleteBlocking(id: BlockingId) {
-    const blocking = this.getBlocking(id)
+  async deleteBlocking(id: BlockingId) {
+    const blocking = await this.getBlocking(id)
 
     if (blocking) {
-      this.blockings = this.blockings.filter((blocking) => blocking.id === id)
+      return await this._setBlocking(id, null)
     }
   }
 
@@ -47,10 +49,9 @@ export class RulesEngine {
     const total = 10
     for (let index = 0; index < total; index++) {
       await delay(5000) // Example -> publish message to MQ
-      console.log(`Blocker on ${id}. Index: ${index}`)
-      if(blocking) {
-        blocking.value++
-      }
+      const { value } = await this.getBlocking(id)
+      await this._setBlocking(id, { id, value: value + 1 })
+      console.log(`Blocker on ${id}. Index: ${index}. value: ${value}`)
     }
   }
 }
