@@ -1,3 +1,3 @@
-# POC
+# FDS
 
-Proof of concepts 
+Fraud detection service. Main backend of the app
