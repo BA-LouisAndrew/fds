@@ -1,6 +1,5 @@
 FROM node:16-alpine
 
-ENV NODE_ENV=production
 ARG REDIS
 
 ENV REDIS=$REDIS
@@ -9,10 +8,11 @@ WORKDIR /app
 
 COPY ["package.json", "package-lock.json*", "./"]
 
-RUN npm install --production
+RUN npm ci 
 COPY . .
 
 RUN npm run build
+ENV NODE_ENV=production
 
 
 CMD [ "node", "./dist/src/main.js" ]
