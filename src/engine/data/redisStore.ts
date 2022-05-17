@@ -3,14 +3,27 @@ import { createClient, RedisClientType } from "redis"
 import { Blocking, BlockingId } from "../../routes/blocking/blocking"
 import { DataStore } from "./dataStore"
 
+const createRedisConfig = () => {
+  const isProduction = process.env.REDIS !== undefined
+  if (!isProduction) {
+    return {}
+  }
+
+  return {
+    url: process.env.REDIS,
+    socket: {
+      tls: true,
+      rejectUnauthorized: false
+    }
+  }
+}
+
 export class RedisStore extends DataStore {
   client: RedisClientType
 
   constructor() {
     super()
-    this.client = createClient({
-      url: process.env.REDIS
-    })
+    this.client = createClient(createRedisConfig())
     DataStore.instance = this
   }
 
