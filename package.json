@@ -28,7 +28,9 @@
     "nodemon": "2.0.16",
     "prettier": "2.6.2",
     "ts-node": "10.7.0",
-    "typescript": "4.6.4"
+    "tsconfig-paths": "4.0.0",
+    "typescript": "4.6.4",
+    "vitest": "0.12.6"
   },
   "scripts": {
     "build": "tsoa spec-and-routes && npx tsc",
@@ -36,7 +38,8 @@
     "lint": "eslint src/**/*.ts",
     "start": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "start:prod": "npm run build && node ./dist/main.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
     "setup:redis": "docker run -p 6379:6379 --name redis-redisjson redislabs/rejson:latest",
     "start:redis": "docker start redis-redisjson",
     "stop:redis": "docker stop redis-redisjson"

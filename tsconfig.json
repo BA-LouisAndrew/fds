@@ -1,14 +1,23 @@
 {
- "compilerOptions":
-   {
-     "target": "es2018",
-     "module": "commonjs",
-     "outDir": "dist",
-     "sourceMap": true,
-     "esModuleInterop": true,
-     "experimentalDecorators": true,
-     "resolveJsonModule": true
-   },
- "include": ["src/**/*.ts"],
- "exclude": ["node_modules"],
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "outDir": "dist",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "types": ["vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "tsoa": ["node_modules/tsoa/dist"],
+      "tsoa/": ["node_modules/tsoa/dist/"],
+    }
+  },
+  "include": ["src/**/*.ts", "tests/**/*.spec.ts"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }
