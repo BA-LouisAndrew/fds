@@ -9,11 +9,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: TODO
-        run: echo "TODO"
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: louisandrew-bachelorarbeit
+          heroku_email: "louisandrew3@gmail.com"
+          usedocker: true
+          docker_build_args: |
+            REDIS
+        env: 
+          REDIS: ${{ secrets.REDIS }}
 
   release:
     runs-on: ubuntu-latest
+    needs: deploy
     steps:  
       - uses: actions/checkout@v2
       - name: Bump version and push tag

@@ -8,7 +8,9 @@ export class RedisStore extends DataStore {
 
   constructor() {
     super()
-    this.client = createClient()
+    this.client = createClient({
+      url: process.env.REDIS
+    })
     DataStore.instance = this
   }
 
