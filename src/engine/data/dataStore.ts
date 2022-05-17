@@ -1,13 +1,19 @@
-import { Blocking, BlockingId } from "../../routes/blocking/blocking"
 
 export abstract class DataStore {
-  static instance: DataStore
+  private static instance: DataStore
 
-  abstract get(id: BlockingId): Promise<Blocking>
-  abstract set(id: BlockingId, blocking: Blocking): Promise<void>
-  abstract delete(id: BlockingId): Promise<void>
-
-  validate(object: any): boolean {
-    return object && object.id !== undefined && object.value !== undefined
+  static getInstance() {
+    return this.instance
   }
+
+  protected static setInstance(store: DataStore) {
+    DataStore.instance = store
+  }
+
+  abstract init(): Promise<void>
+
+  abstract get(id: string): Promise<string>
+  abstract set(id: string, data: string): Promise<void>
+  abstract delete(id: string): Promise<void>
+
 }

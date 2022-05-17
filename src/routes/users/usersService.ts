@@ -1,4 +1,6 @@
 // src/users/usersService.ts
+import { DataStore } from "@/engine/data/dataStore"
+
 import { User } from "./user"
 
 // A post request should not contain an id.
@@ -15,11 +17,17 @@ export class UsersService {
     }
   }
 
-  public create(userCreationParams: UserCreationParams): User {
+  public async create(userCreationParams: UserCreationParams): Promise<User> {
+    const id = Math.floor(Math.random() * 10000)
+    await DataStore.getInstance().set(id.toString(), userCreationParams.name)
     return {
-      id: Math.floor(Math.random() * 10000), // Random
+      id, 
       status: "Happy",
       ...userCreationParams,
     }
+  }
+
+  public redisPOC(id: string): Promise<string> {
+    return DataStore.getInstance().get(id)
   }
 }

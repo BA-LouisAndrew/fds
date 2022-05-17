@@ -1,6 +1,5 @@
 import { createClient, RedisClientType } from "redis"
 
-import { Blocking, BlockingId } from "../../routes/blocking/blocking"
 import { DataStore } from "./dataStore"
 
 const createRedisConfig = () => {
@@ -24,62 +23,28 @@ export class RedisStore extends DataStore {
   constructor() {
     super()
     this.client = createClient(createRedisConfig())
-    DataStore.instance = this
-  }
-
-  async connect() {
-    await this.client.connect()
-    console.log(await this.client.keys("*"))
-  }
-
-  /**
-   * Not a best practice
-   * @deprecated
-   */
-  async _get(id: BlockingId): Promise<Blocking> {
-    const blockingStringified = await this.client.get(id.toString())
-    const blocking = JSON.parse(blockingStringified)
-    if (this.validate(blocking)) {
-      return blocking
-    }
-
-    return {
-      id: -1,
-      value: -1,
-    }
   }
   
-  /**
-   * Needs RedisJSON to be installed.
-   */
-  async get(id: BlockingId): Promise<Blocking> {
-    const blocking = await this.client.json.get(id.toString(), { path: "." })
-    if (this.validate(blocking)) {
-      return blocking as unknown as Blocking
+  async init() {
+    await this.client.connect()
+    DataStore.setInstance(this)
+    console.log("> Redis instance connected.")
+  }
+
+
+  async get(id: string): Promise<string> {
+    const value = await this.client.get(id) 
+    if (!value) {
+      return ""
     }
-
-    return {
-      id: -1,
-      value: -1,
-    }
+    return value
   }
 
-  /**
-   * @deprecated Do not use
-   */
-  async _set(id: BlockingId, blocking: Blocking): Promise<void> {
-    const blockingStringified = JSON.stringify(blocking)
-    await this.client.set(id.toString(), blockingStringified)
+  async set(id: string, data: string): Promise<void> {
+    await this.client.set(id, data)
   }
 
-  /**
-   * Needs RedisJSON to be installed.
-   */
-  async set(id: BlockingId, blocking: Blocking): Promise<void> {
-    await this.client.json.set(id.toString(), ".", blocking as any)
-  }
-
-  async delete(id: BlockingId): Promise<void> {
-    await this.client.del(id.toString())
+  async delete(id: string): Promise<void> {
+    await this.client.del(id)
   }
 }
