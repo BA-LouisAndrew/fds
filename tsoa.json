@@ -16,6 +16,12 @@
   "paths": {
    "@/*": [
     "./src/*"
+   ],
+   "tsoa": [
+    "node_modules/tsoa/dist"
+   ],
+   "tsoa/": [
+    "node_modules/tsoa/dist/"
    ]
   }
  }

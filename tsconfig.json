@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "incremental": true,
+    "target": "es6",
     "module": "commonjs",
     "outDir": "dist",
     "sourceMap": true,
@@ -12,8 +13,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "tsoa": ["node_modules/tsoa/dist"],
-      "tsoa/": ["node_modules/tsoa/dist/"],
-    }
+      "tsoa/": ["node_modules/tsoa/dist/"]
+    },
   },
   "include": ["src/**/*.ts", "tests/**/*.spec.ts"],
   "exclude": ["node_modules"],
