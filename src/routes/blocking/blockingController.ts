@@ -1,6 +1,8 @@
 // src/users/usersController.ts
 import { Body, Controller, Get, Path, Post, Route, SuccessResponse } from "tsoa"
 
+import { adder } from "@/utils/adder"
+
 import { Blocking, BlockingId } from "./blocking"
 import { BlockingService } from "./blockingService"
 
@@ -16,5 +18,10 @@ export class BlockingController extends Controller {
   public async createUser(@Body() body: { id: BlockingId }): Promise<Blocking> {
     this.setStatus(201)
     return new BlockingService().create(body.id)
+  }
+
+  @Get()
+  public async getAdder(): Promise<number> {
+    return adder(1, 2)
   }
 }
