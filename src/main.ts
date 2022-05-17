@@ -1,11 +1,11 @@
 import { app } from "./app"
-import { RedisStore } from "./engine/data/redisStore"
+import { initStore } from "./engine/data/initStore"
 
 const port = process.env.PORT || 8000
 
 ;(async () => {
-  const dataStore = new RedisStore()
-  await dataStore.connect()
+  const store = initStore()
+  await store.init()
 
   app.listen(port, () => {
     console.log("app listening on " + port)
