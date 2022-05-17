@@ -15,11 +15,13 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: louisandrew-bachelorarbeit
           heroku_email: "louisandrew3@gmail.com"
-          usedocker: true
-          docker_build_args: |
-            REDIS
-        env: 
-          REDIS: ${{ secrets.REDIS }}
+          justlogin: true
+      - run: heroku container:login
+      - run: docker build \
+            -t registry.heroku.com/louisandrew-bachelorarbeit/web \
+            --build-arg REDIS=${{ secrets.REDIS }} .
+      - run: docker push registry.heroku.com/louisandrew-bachelorarbeit/web 
+      - run: heroku container:release -a louisandrew-bachelorarbeit web
 
   release:
     runs-on: ubuntu-latest
