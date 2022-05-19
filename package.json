@@ -1,9 +1,10 @@
 {
-  "name": "poc",
+  "name": "fds",
   "version": "1.0.0",
-  "description": "Proof of concepts",
+  "description": "Fraud Detection Service backend",
   "main": "index.js",
   "dependencies": {
+    "@prisma/client": "3.14.0",
     "body-parser": "1.20.0",
     "cors": "2.8.5",
     "eslint-config-airbnb-base": "15.0.0",
