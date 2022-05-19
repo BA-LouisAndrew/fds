@@ -39,9 +39,8 @@ export class RulesController extends Controller {
   @SuccessResponse(201, "Created")
   @Post()
   public async createRule(@Body() requestBody: ValidationRule): Promise<ValidationRule> {
-    console.log(requestBody)
-    this.setStatus(201)
-    return requestBody
+    const { data } = await RulesService.createRule(requestBody)
+    return data as ValidationRule
   }
 
   /**
