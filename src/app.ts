@@ -6,11 +6,11 @@ import express, { NextFunction, Request, Response } from "express"
 import swaggerUi from "swagger-ui-express"
 import { ValidateError } from "tsoa"
 
+import { subscribeToValidationProgress } from "./routes/validation/validationController"
 import { RegisterRoutes } from "./tsoa/routes"
 
 export const app = express()
 
-// Use body parser to read sent json payloads
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -22,6 +22,8 @@ app.use(cors())
 app.use("/docs", swaggerUi.serve, async (_req: Request, res: Response) => {
   return res.send(swaggerUi.generateHTML(await import("./tsoa/swagger.json")))
 })
+
+app.get("/validate/:validationId/subscribe", subscribeToValidationProgress)
 
 RegisterRoutes(app)
 
@@ -53,11 +55,4 @@ app.use((
   }
 
   next()
-})
-
-/**
- * SSE -> Non-REST compliant endpoints
- */
-app.get("/users", (_, response: Response) => {
-  response.send("Hi!")
 })

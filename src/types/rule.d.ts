@@ -6,7 +6,7 @@
 /**
  * Model for the validation rule that would be stored in the database and evaluated during runtime.
  */
-export type ValidationRule = {
+export interface ValidationRule {
   /**
    * Retry strategy if the endpoint is not accessible.
    */
@@ -30,7 +30,7 @@ export type ValidationRule = {
    * Condition/-s, with which the rule should be evaluated to determine
    * whether the validation passes.
    */
-  condition: Condition | BooleanCondition 
+  condition: Condition | BooleanCondition;
   /**
    * HTTP method to be used to call the external check endpoint.
    */
@@ -59,7 +59,7 @@ export type ValidationRule = {
    * Unique identifier of the rule.
    */
   name: string;
-};
+}
 
 type GenericObject = { [key: string]: any };
 
