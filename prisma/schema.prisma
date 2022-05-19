@@ -22,8 +22,8 @@ model ValidationRule {
   endpoint            String
   method              String
   failScore           Int
-  retryStrategy       Json
-  requestUrlParameter Json
-  requestBody         Json
   condition           Json
+  retryStrategy       Json?
+  requestUrlParameter Json?
+  requestBody         Json?
 }
