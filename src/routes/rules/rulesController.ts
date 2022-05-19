@@ -4,6 +4,8 @@ import { sampleRule } from "@/seed/rule"
 import { NotFound, ValidationErrorJSON } from "@/types/responses"
 import { ValidationRule } from "@/types/rule"
 
+import { RulesService } from "./rulesService"
+
 type UpdateRuleRequestBody = Partial<Omit<ValidationRule, "name">>;
 
 @Route("rules")
@@ -16,11 +18,16 @@ export class RulesController extends Controller {
   @Example<ValidationRule>(sampleRule)
   @Response<NotFound>(404, "Not Found")
   @Get("{ruleName}")
-  public async getRule(@Path() ruleName: string): Promise<ValidationRule> {
-    return {
-      ...sampleRule,
-      name: ruleName,
+  public async getRule(@Path() ruleName: string): Promise<ValidationRule | NotFound> {
+    const { data, error } = await RulesService.getRule(ruleName)
+    if (error) {
+      this.setStatus(404)
+      return {
+        message: error.message
+      }
     }
+
+    return data
   }
 
   /**

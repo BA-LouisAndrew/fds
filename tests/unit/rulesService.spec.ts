@@ -1,22 +1,21 @@
-import { Context, createMockContext, MockContext } from "@/engine/database/context"
+import { createMockContext, MockContext } from "@/engine/database/context"
 import { Database } from "@/engine/database/database"
 import { resolveTSType } from "@/engine/database/resolver"
-import { sampleRule, sampleRuleWithBoolCondition } from "@/seed/rule"
+import { RulesService } from "@/routes/rules/rulesService"
+import { sampleRule } from "@/seed/rule"
 import { Condition } from "@/types/rule"
 
-describe("Database class", () => {
-  let database: Database
+describe("Rules Service class", () => {
   let mockContext: MockContext
 
   beforeEach(async () => {
     mockContext = createMockContext()
-    database = new Database(mockContext)
-    await database.init()
+    await new Database(mockContext).init()
   })
   
   it("should retrieve details of a rule if a rule name is provided", async () => {
     mockContext.prisma.validationRule.findFirst.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
-    const result = await Database.getRule(sampleRule.name)
+    const result = await RulesService.getRule(sampleRule.name)
     expect(mockContext.prisma.validationRule.findFirst).toBeCalledWith({
       where: {
         name: sampleRule.name
@@ -27,7 +26,7 @@ describe("Database class", () => {
   
   it("should return an error if the rule that is trying to be accessed doesn't exist", async () => {
     mockContext.prisma.validationRule.findFirst.mockResolvedValue(null)
-    const result = await Database.getRule(sampleRule.name)
+    const result = await RulesService.getRule(sampleRule.name)
 
     expect(result.data).toBe(null)
     expect(result.error).toBeTruthy()
@@ -36,14 +35,14 @@ describe("Database class", () => {
   it("should create a new rule if the parameter is correct", async () => {
     mockContext.prisma.validationRule.create.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
 
-    const result = await Database.createRule(sampleRule)
+    const result = await RulesService.createRule(sampleRule)
     expect(result).toEqual({ data: { id: "", ...sampleRule }, error: null })
   })
 
   it("should not create a new rule if condition has both 'any' and 'all'", async () => {
     mockContext.prisma.validationRule.create.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
 
-    const result = await Database.createRule({
+    const result = await RulesService.createRule({
       ...sampleRule,
       condition: {
         all: [sampleRule.condition as Condition],
@@ -59,7 +58,7 @@ describe("Database class", () => {
     mockContext.prisma.validationRule.update.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
     const { name, ...rule } = sampleRule
 
-    const result = await Database.updateRule(rule, name)
+    const result = await RulesService.updateRule(rule, name)
 
     expect(result).toEqual({ data: { id: "", ...sampleRule }, error: null })
   })
@@ -68,7 +67,7 @@ describe("Database class", () => {
     mockContext.prisma.validationRule.update.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
     const { name, ...rule } = sampleRule
 
-    const result = await Database.updateRule(
+    const result = await RulesService.updateRule(
       {
         ...rule,
         condition: {
@@ -85,7 +84,7 @@ describe("Database class", () => {
   
   it("should delete a rule if it exists",async () => {
     mockContext.prisma.validationRule.delete.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
-    const result = await Database.deleteRule(sampleRule.name)
+    const result = await RulesService.deleteRule(sampleRule.name)
 
     expect(mockContext.prisma.validationRule.delete).toBeCalledWith({
       where: {
