@@ -6,7 +6,17 @@
  ],
  "spec": {
   "outputDirectory": "src/tsoa",
-  "specVersion": 3
+  "specVersion": 3,
+  "tags": [
+   {
+    "name": "Rules",
+    "description": "Operations about validation rules"
+   },
+   {
+    "name": "Validation",
+    "description": "Operations to run validation / get validation result"
+   }
+  ]
  },
  "routes": {
   "routesDir": "src/tsoa"

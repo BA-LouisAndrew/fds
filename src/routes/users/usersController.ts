@@ -1,4 +1,3 @@
-// src/users/usersController.ts
 import { Body, Controller, Get, Path, Post, Route, SuccessResponse } from "tsoa"
 
 import { User } from "./user"
