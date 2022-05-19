@@ -7,6 +7,7 @@
  "spec": {
   "outputDirectory": "src/tsoa",
   "specVersion": 3,
+  "basePath": "api/v1",
   "tags": [
    {
     "name": "Rules",
@@ -16,10 +17,16 @@
     "name": "Validation",
     "description": "Operations to run validation / get validation result"
    }
-  ]
+  ],
+  "contact": {
+   "email": "louisandrew3@gmail.com",
+   "name": "Louis Andrew",
+   "url": "https://louis-andrew.com"
+  }
  },
  "routes": {
-  "routesDir": "src/tsoa"
+  "routesDir": "src/tsoa",
+  "basePath": "api/v1"
  },
  "compilerOptions": {
   "baseUrl": ".",
