@@ -1,16 +1,28 @@
 import { Body, Controller, Delete, Example, Get, Path, Post, Put, Response, Route, SuccessResponse, Tags } from "tsoa"
 
 import { sampleRule } from "@/seed/rule"
-import { NotFound, ValidationErrorJSON } from "@/types/responses"
+import { NotFound, ValidationErrorJSON, WentWrong } from "@/types/responses"
 import { ValidationRule } from "@/types/rule"
 
-import { RulesService } from "./rulesService"
+import { RulesService, UpdateRuleRequestBody } from "./rulesService"
 
-type UpdateRuleRequestBody = Partial<Omit<ValidationRule, "name">>;
 
 @Route("rules")
 @Tags("Rules")
 export class RulesController extends Controller {
+  /**
+   * Retrieves all of existing validation rules.
+   */
+  @Example<ValidationRule[]>([sampleRule])
+  @Get()
+  public async listRules(): Promise<ValidationRule[]> {
+    const { data, error } = await RulesService.listRules()
+    if (error) {
+      return []
+    }
+    return data
+  }
+
   /**
    * Retrieves details of an existing validation rule.
    * @param ruleName Unique name of the rule.
@@ -36,11 +48,20 @@ export class RulesController extends Controller {
    */
   @Example<ValidationRule>(sampleRule)
   @Response<ValidationErrorJSON>(422, "Validation Failed")
+  @Response<WentWrong>(400, "Bad Request")
   @SuccessResponse(201, "Created")
   @Post()
-  public async createRule(@Body() requestBody: ValidationRule): Promise<ValidationRule> {
-    const { data } = await RulesService.createRule(requestBody)
-    return data as ValidationRule
+  public async createRule(@Body() requestBody: ValidationRule): Promise<ValidationRule | WentWrong> {
+    const { data, error } = await RulesService.createRule(requestBody)
+    if (error) {
+      this.setStatus(400)
+      return {
+        message: "Bad Request",
+        details: error.message
+      }
+    }
+    
+    return data 
   }
 
   /**
@@ -50,16 +71,22 @@ export class RulesController extends Controller {
    */
   @Example<ValidationRule>(sampleRule)
   @Response<ValidationErrorJSON>(422, "Validation Failed")
-  @Response<NotFound>(404, "Not Found")
+  @Response<WentWrong>(404, "Not Found")
   @Put("{ruleName}")
   public async updateRule(
     @Path() ruleName: string,
     @Body() requestBody: UpdateRuleRequestBody,
-  ): Promise<ValidationRule> {
-    return {
-      ...sampleRule,
-      ...requestBody,
+  ): Promise<ValidationRule | WentWrong> {
+    const { error, data } = await RulesService.updateRule(requestBody, ruleName)
+    if (error) {
+      this.setStatus(404)
+      return {
+        message: "Not Found",
+        details: error.message
+      }
     }
+    
+    return data
   }
 
   /**
@@ -67,9 +94,18 @@ export class RulesController extends Controller {
    * @param ruleName Unique name / identifier of the rule.
    */
   @SuccessResponse(204, "Deleted")
+  @Response<WentWrong>(400, "Bad Request")
   @Delete("{ruleName}")
-  public async deleteRule(@Path() ruleName: string): Promise<{ success: boolean }> {
-    this.setStatus(204)
-    return { success: true }
+  public async deleteRule(@Path() ruleName: string): Promise<{ success: boolean } | WentWrong> {
+    const { data, error } = await RulesService.deleteRule(ruleName)
+    if (error) {
+      this.setStatus(400)
+      return {
+        message: "Bad Request",
+        details: error.message
+      }
+    }
+    
+    return data
   }
 }

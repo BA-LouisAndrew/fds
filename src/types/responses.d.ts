@@ -6,3 +6,8 @@ export interface ValidationErrorJSON {
 export interface NotFound {
   message: string;
 }
+
+export interface WentWrong {
+  message: string
+  details: string
+}
