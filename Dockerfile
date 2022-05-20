@@ -11,8 +11,8 @@ WORKDIR /app
 COPY ["package.json", "package-lock.json*", "./"]
 
 RUN npm ci 
-run npm run prisma:generate
 COPY . .
+run npm run prisma:generate
 
 RUN npm run build
 ENV NODE_ENV=production
