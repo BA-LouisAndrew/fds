@@ -15,8 +15,9 @@
       "tsoa": ["node_modules/tsoa/dist"],
       "tsoa/": ["node_modules/tsoa/dist/"]
     },
+    "strictNullChecks": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.spec.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.spec.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
