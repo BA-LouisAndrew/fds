@@ -17,7 +17,7 @@
     },
     "strictNullChecks": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.spec.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.spec.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]

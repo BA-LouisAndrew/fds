@@ -2,7 +2,7 @@ import { createMockContext, MockContext } from "@/engine/database/context"
 import { Database } from "@/engine/database/database"
 import { resolveTSType } from "@/engine/database/resolver"
 import { RulesService } from "@/routes/rules/rulesService"
-import { sampleRule } from "@/seed/rule"
+import { prismaValidationRule, sampleRule } from "@/seed/rule"
 import { Condition } from "@/types/rule"
 
 describe("Rules Service class", () => {
@@ -14,7 +14,7 @@ describe("Rules Service class", () => {
   })
   
   it("should retrieve details of a rule if a rule name is provided", async () => {
-    mockContext.prisma.validationRule.findFirst.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
+    mockContext.prisma.validationRule.findFirst.mockResolvedValue(prismaValidationRule)
     const result = await RulesService.getRule(sampleRule.name)
     expect(mockContext.prisma.validationRule.findFirst).toBeCalledWith({
       where: {
@@ -33,7 +33,7 @@ describe("Rules Service class", () => {
   })
 
   it("should create a new rule if the parameter is correct", async () => {
-    mockContext.prisma.validationRule.create.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
+    mockContext.prisma.validationRule.create.mockResolvedValue(prismaValidationRule)
 
     const result = await RulesService.createRule(sampleRule)
     expect(result).toEqual({ data: { id: "", ...sampleRule }, error: null })
@@ -64,7 +64,7 @@ describe("Rules Service class", () => {
   })
 
   it("should not update the rule if condition has both 'any' and 'all'", async () => {
-    mockContext.prisma.validationRule.update.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
+    mockContext.prisma.validationRule.update.mockResolvedValue(prismaValidationRule)
     const { name, ...rule } = sampleRule
 
     const result = await RulesService.updateRule(
@@ -83,7 +83,7 @@ describe("Rules Service class", () => {
   })
   
   it("should delete a rule if it exists",async () => {
-    mockContext.prisma.validationRule.delete.mockResolvedValue({ id: "", ...resolveTSType(sampleRule) })
+    mockContext.prisma.validationRule.delete.mockResolvedValue(prismaValidationRule)
     const result = await RulesService.deleteRule(sampleRule.name)
 
     expect(mockContext.prisma.validationRule.delete).toBeCalledWith({
@@ -93,9 +93,5 @@ describe("Rules Service class", () => {
     })
     
     expect(result).toEqual({ data: { success: true }, error: null })
-  })
-
-  it.skip("should return an error if rule to be deleted doesn't exist", () => {
-    // 
   })
 })

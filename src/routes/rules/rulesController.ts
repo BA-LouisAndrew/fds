@@ -6,7 +6,6 @@ import { ValidationRule } from "@/types/rule"
 
 import { RulesService, UpdateRuleRequestBody } from "./rulesService"
 
-
 @Route("rules")
 @Tags("Rules")
 export class RulesController extends Controller {
@@ -35,7 +34,7 @@ export class RulesController extends Controller {
     if (error) {
       this.setStatus(404)
       return {
-        message: error.message
+        message: error.message,
       }
     }
 
@@ -57,11 +56,11 @@ export class RulesController extends Controller {
       this.setStatus(400)
       return {
         message: "Bad Request",
-        details: error.message
+        details: error.message,
       }
     }
-    
-    return data 
+
+    return data
   }
 
   /**
@@ -82,10 +81,10 @@ export class RulesController extends Controller {
       this.setStatus(404)
       return {
         message: "Not Found",
-        details: error.message
+        details: error.message,
       }
     }
-    
+
     return data
   }
 
@@ -93,19 +92,19 @@ export class RulesController extends Controller {
    * Deletes an existing validation rule from the database.
    * @param ruleName Unique name / identifier of the rule.
    */
-  @SuccessResponse(204, "Deleted")
   @Response<WentWrong>(400, "Bad Request")
+  @SuccessResponse(204, "Deleted")
   @Delete("{ruleName}")
-  public async deleteRule(@Path() ruleName: string): Promise<{ success: boolean } | WentWrong> {
+  public async deleteRule(@Path() ruleName: string): Promise<void | WentWrong> {
     const { data, error } = await RulesService.deleteRule(ruleName)
     if (error) {
       this.setStatus(400)
       return {
         message: "Bad Request",
-        details: error.message
+        details: error.message,
       }
     }
-    
-    return data
+
+    this.setStatus(204)
   }
 }
