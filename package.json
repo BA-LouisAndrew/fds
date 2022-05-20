@@ -43,6 +43,7 @@
     "build": "npm run tsoa && tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "format": "eslint src/**/*.ts --fix",
     "lint": "eslint src/**/*.ts",
+    "prisma:generate": "npx prisma generate",
     "tsoa": "tsoa spec-and-routes",
     "start": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "serve": "node ./dist/src/main.js",
