@@ -1,4 +1,4 @@
-![Heroku](https://pyheroku-badge.herokuapp.com/?app=louisandrew-bachelorarbeit&style=<STYLE>)
+![Heroku](https://pyheroku-badge.herokuapp.com/?app=louisandrew-bachelorarbeit&style=square)
 
 # FDS
 
