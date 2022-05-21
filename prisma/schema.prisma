@@ -21,7 +21,7 @@ model ValidationRule {
   priority            Int
   endpoint            String
   method              String
-  failScore           Int
+  failScore           Float
   condition           Json
   retryStrategy       Json?
   requestUrlParameter Json?
