@@ -2,8 +2,8 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime"
 
 import { Database } from "@/engine/database/database"
 import { resolvePrismaType } from "@/engine/database/resolver"
-import { ApiErrorResponse, ApiResponse } from "@/types/api"
-import { BooleanCondition, Condition, ValidationRule } from "@/types/rule"
+import { ApiErrorResponse, ApiResponse, ServiceValidationReturnType } from "@/types/api"
+import { BooleanCondition, Condition, RetryStrategy, ValidationRule } from "@/types/rule"
 
 export type UpdateRuleRequestBody = Partial<Omit<ValidationRule, "name">>;
 
@@ -120,8 +120,13 @@ export class RulesService {
       return this.handleError(e,{ name: ruleName })
     }
   }
+  
+  private static validateRetryStrategy(retryStrategy: RetryStrategy): ServiceValidationReturnType {
+    // TODO
+    return { isValid: true, message: "" }
+  }
 
-  private static validateCondition(condition: Condition | BooleanCondition): { isValid: boolean; message: string } {
+  private static validateCondition(condition: Condition | BooleanCondition): ServiceValidationReturnType {
     const conditionKeys = Object.keys(condition)
     const isUsingAny = conditionKeys.includes("any")
     const isUsingAll = conditionKeys.includes("all")
