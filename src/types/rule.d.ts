@@ -123,7 +123,5 @@ export type RetryStrategy = {
    * @maximum 3
    */
   limit: number;
-  methods: string[]; // TODO: validate possible HTTP methods
-  statusCodes: string[]; // TODO: validate possible HTTP status codes
-  errorCodes: string[]; // TODO: validate possible HTTP error codes
+  statusCodes: number[]; // TODO: validate possible HTTP status codes
 };

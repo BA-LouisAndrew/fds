@@ -12,3 +12,5 @@ export type ApiSuccessResponse<T> = {
 };
 
 export type ApiResponse<T> = ApiErrorResponse | ApiSuccessResponse<T>;
+
+export type ServiceValidationReturnType = { isValid: boolean; message: string }
