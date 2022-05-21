@@ -3,6 +3,8 @@
  * https://github.com/CacheControl/json-rules-engine/blob/master/docs/rules.md#constructorobject-optionsstring-json
  */
 
+import { Operator } from "./operators"
+
 /**
  * Model for the validation rule that would be stored in the database and evaluated during runtime.
  */
@@ -61,12 +63,9 @@ export interface ValidationRule {
   name: string;
 }
 
-type GenericObject = { [key: string]: any };
+export type GenericObject = { [key: string]: any };
 
-/**
- * TODO: Decide which operations should be supported.
- */
-export type OperatorName = string;
+export type ConditionType = "string" | "number" | "array" | "boolean";
 
 /**
  * Condition of a rule, to determine whether the validation passes.
@@ -83,7 +82,11 @@ export type Condition = {
    * Name of the operator that should be used$.validAddress to evaluate the condition.
    * @example 'equals' | 'contains'
    */
-  operator: OperatorName;
+  operator: Operator;
+  /**
+   * Type of the attribute to be validated.
+   */
+  type: ConditionType;
   /**
    * Value, with which the condition should be evaluated.
    * @example true | 200 | 'success'

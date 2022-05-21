@@ -5,7 +5,8 @@ export const sampleRule: ValidationRule = {
   skip: false,
   condition: {
     path: "$.statusCode",
-    operator: "equals",
+    operator: "eq",
+    type: "number",
     value: 200,
     failMessage: "Status code doesn't equal to 200",
   },
@@ -22,14 +23,16 @@ export const sampleRuleWithBoolCondition: ValidationRule = {
     any: [
       {
         path: "$.statusCode",
-        operator: "equals",
+        operator: "eq",
         value: 200,
         failMessage: "Status code doesn't equal to 200",
+        type: "number"
       },
       {
-        path: "$.body.message",
-        operator: "equals",
-        value: "Operation successful",
+        path: "$.body.success",
+        operator: "eq",
+        type: "boolean",
+        value: true,
         failMessage: "Message doesn't seem right!",
       },
     ],
