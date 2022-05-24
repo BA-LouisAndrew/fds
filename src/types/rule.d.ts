@@ -12,7 +12,7 @@ export interface ValidationRule {
   /**
    * Retry strategy if the endpoint is not accessible.
    */
-  retryStrategy?: RetryStrategy;
+  retryStrategy?: RetryStrategy | null;
   /**
    * Used to determine the parameter on the endpoint URL. (e.g. endpointUrl: 'http://localhost/validate/{user}/{city}')
    * Only available when the endpoint URL contains a URL parameter.
@@ -103,13 +103,10 @@ export type Condition = {
  *  'any': The validation passes if at least one of the condition is true.
  *  'all': The validation passes ONLY if ALL of the conditions are true.
  */
-export type BooleanCondition =
-  | {
-      all: Condition[];
-    }
-  | {
-      any: Condition[];
-    };
+export type BooleanCondition = {
+  all?: Condition[];
+  any?: Condition[];
+};
 
 /**
  * Retry strategy if the endpoint is not accessible. Will be passed into `got`'s
