@@ -105,7 +105,7 @@ export type Condition = {
  */
 export type BooleanCondition = {
   all?: Condition[];
-  any?: Condition;
+  any?: Condition[];
 };
 
 /**
