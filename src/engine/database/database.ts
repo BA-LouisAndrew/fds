@@ -74,7 +74,7 @@ export class Database {
         const keyName = `${ruleName}.${key}`
         const value = await this.cache.get(keyName)
 
-        if (value === "") {
+        if (value === "" || value === "undefined") {
           return [key, null]
         }
 
