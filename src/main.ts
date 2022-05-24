@@ -6,7 +6,7 @@ import { Database } from "./engine/database/database"
 const port = process.env.PORT || 8000
 
 ;(async () => {
-  const store = initStore(true)
+  const store = initStore(false) // In memory store
   const database = new Database(createContext())
 
   await database.init()
