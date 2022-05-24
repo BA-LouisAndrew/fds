@@ -17,12 +17,20 @@ export class RulesService {
         error: null,
       }
     } catch (e) {
-      return this.handleError(e) 
+      return this.handleError(e)
     }
   }
 
   static async getRule(ruleName: string): Promise<ApiResponse<ValidationRule>> {
     try {
+      const cachedValue = await Database.getCachedValidationRule(ruleName)
+      if (cachedValue) {
+        return {
+          data: cachedValue,
+          error: null,
+        }
+      }
+
       const data = await Database.validationRule.findFirst({
         where: {
           name: ruleName,
@@ -38,8 +46,10 @@ export class RulesService {
         }
       }
 
+      const validationRule = resolvePrismaType(data)
+      await Database.cacheValidationRule(validationRule)
       return {
-        data: resolvePrismaType(data),
+        data: validationRule,
         error: null,
       }
     } catch (e) {
@@ -65,7 +75,9 @@ export class RulesService {
         data: validationRule,
       })
 
-      return { data: resolvePrismaType(newRule), error: null }
+      const createdRule = resolvePrismaType(newRule)
+      await Database.cacheValidationRule(createdRule)
+      return { data: createdRule, error: null }
     } catch (e) {
       return this.handleError(e, validationRule)
     }
@@ -77,7 +89,7 @@ export class RulesService {
   ): Promise<ApiResponse<ValidationRule>> {
     const { condition } = validationRule
 
-    if (condition)  {
+    if (condition) {
       const { isValid, message } = this.validateCondition(condition)
       if (!isValid) {
         return {
@@ -96,7 +108,10 @@ export class RulesService {
           name: ruleName,
         },
       })
-      return { data: resolvePrismaType(newRule), error: null }
+
+      const updatedRule = resolvePrismaType(newRule)
+      await Database.cacheValidationRule(updatedRule)
+      return { data: updatedRule, error: null }
     } catch (e) {
       return this.handleError(e, validationRule)
     }
@@ -117,10 +132,10 @@ export class RulesService {
         error: null,
       }
     } catch (e) {
-      return this.handleError(e,{ name: ruleName })
+      return this.handleError(e, { name: ruleName })
     }
   }
-  
+
   private static validateRetryStrategy(retryStrategy: RetryStrategy): ServiceValidationReturnType {
     // TODO
     return { isValid: true, message: "" }
@@ -147,7 +162,7 @@ export class RulesService {
 
   private static handleError(e: unknown, payload: any = {}): ApiErrorResponse {
     console.log(JSON.stringify(e))
-    
+
     if (e instanceof PrismaClientKnownRequestError) {
       if (e.meta?.cause) {
         return {
