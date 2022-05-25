@@ -8,4 +8,4 @@ export type NumberOperatorIds = typeof numberOperatorIds[number];
 export type ArrayOperatorIds = typeof arrayOperatorIds[number];
 export type BooleanOperatorIds = typeof booleanOperatorIds[number];
 
-export type Operator = StringOperatorIds | NumberOperatorIds | ArrayOperatorIds | BooleanOperatorIds;
+export type OperatorType = StringOperatorIds | NumberOperatorIds | ArrayOperatorIds | BooleanOperatorIds;

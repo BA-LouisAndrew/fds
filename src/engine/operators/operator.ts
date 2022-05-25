@@ -1,6 +1,6 @@
 type OperateFunction<T, V = T> = (value: T, receivedValue: V) => boolean;
 
-export class Operator<ValueType, IdentifierType extends string = string, ReceivedValueType = ValueType> {
+export class Operator<ValueType = any, IdentifierType extends string = string, ReceivedValueType = ValueType> {
   private identifier: IdentifierType
   private operateFunction: OperateFunction<ValueType, ReceivedValueType>
   protected validateFunction: (value: any) => boolean
@@ -37,3 +37,5 @@ export class Operator<ValueType, IdentifierType extends string = string, Receive
     return false
   }
 }
+
+// operators are using the `flyweight` pattern: https://refactoring.guru/design-patterns/flyweight
