@@ -8,7 +8,6 @@ export class ArrayOperator extends Operator<
   (number | string | boolean)[]
 > {
   protected validateFunction = (value) => {
-    console.log("native")
     if (value === null || value === undefined) {
       return false
     }
