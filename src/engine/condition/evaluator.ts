@@ -41,6 +41,9 @@ export class Evaluator<T extends Condition | BooleanCondition> {
     const dataFromPath = jp.query(data, path)
     if (dataFromPath.length === 0) {
       this.result.messages.push(`Path ${path} is not reachable. Available paths: ${this.formatAccessiblePaths(data)}`)
+      if (data.body) {
+        this.result.messages.push(`Accessible paths on $.body: ${this.formatAccessiblePaths(data.body)}`)
+      }
       return null
     }
 

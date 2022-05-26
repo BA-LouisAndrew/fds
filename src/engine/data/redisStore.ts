@@ -50,4 +50,8 @@ export class RedisStore extends DataStore {
   async delete(id: string): Promise<void> {
     await this.client.del(id)
   }
+  
+  async print(): Promise<string> {
+    throw new Error("Not implemented!")
+  }
 }

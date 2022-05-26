@@ -9,49 +9,68 @@ import { Agent } from "./request/agent"
 
 export class ValidationEngine<T> {
   private validation: Validation<T>
+  private fraudScores: number[]
 
-  async validateRuleset(): Promise<Validation<T>> {
-    return this.validation
+  private get validationResult(): Validation<T> {
+    return { ...this.validation, fraudScore: this.resultingFraudScore }
+  }
+
+  private get resultingFraudScore() {
+    return this.fraudScores.reduce((a, b) => a + b, 0) / this.fraudScores.length
+  }
+
+  private get runnableRules() {
+    return this.validation.totalChecks - this.validation.skippedChecks.length
+  }
+  
+  async scheduleRulesetValidation(ruleset: ValidationRule[], data: T): Promise<Validation<T>> {
+    await this.constructValidationObject(ruleset, data)
+    this.validateRuleset(ruleset, data)
+    
+    return this.validationResult
+  }
+
+  async validateRuleset(ruleset: ValidationRule[], data: T): Promise<Validation<T>> {
+    if (!this.validation) {
+      await this.constructValidationObject(ruleset, data) // Override flow for testing
+    }
+
+    for await (const rule of ruleset.filter(({ skip }) => !skip)) {
+      const evaluationResult = await this.evaluateRule(rule, data)
+      this.reviewEvaluationResult(evaluationResult, rule)
+    }
+
+    return this.validationResult
   }
 
   async validateSingleRule(rule: ValidationRule, data: T): Promise<Validation<T>> {
     await this.constructValidationObject([rule], data)
 
     const evaluationResult = await this.evaluateRule(rule, data)
-    const checkResult: CheckResult = {
-      name: rule.name,
-      date: new Date().toISOString(),
-      messages: evaluationResult.messages,
-    }
-
-    if (!evaluationResult.pass) {
-      this.validation.fraudScore += rule.failScore
-      this.validation.failedChecks.push(checkResult)
-    } else {
-      this.validation.passedChecks.push(checkResult)
-    }
+    this.reviewEvaluationResult(evaluationResult, rule)
 
     this.validation.additionalInfo.endDate = new Date().toISOString()
 
-    return this.validation
+    return this.validationResult
   }
 
-  private async constructValidationObject(checks: ValidationRule[], data: T) {
+  private async constructValidationObject(ruleset: ValidationRule[], data: T) {
     const validationId = await this.createValidationId()
     this.validation = {
       validationId,
       fraudScore: 0,
-      totalChecks: checks.length,
+      totalChecks: ruleset.length,
       runnedChecks: 0,
       currentlyRunning: undefined,
       passedChecks: [],
       failedChecks: [],
-      skippedChecks: checks.filter((check) => check.skip).map(({ name }) => name),
+      skippedChecks: ruleset.filter((check) => check.skip).map(({ name }) => name),
       additionalInfo: {
         startDate: new Date().toISOString(),
         customerInformation: data,
       },
     }
+    this.fraudScores = []
   }
 
   private async evaluateRule(rule: ValidationRule, data: T): Promise<EvaluationResult> {
@@ -59,13 +78,34 @@ export class ValidationEngine<T> {
     const { error, data: responseData } = await Agent.fireRequest(rule, data)
     if (error) {
       return {
-        messages: [`${endpoint} is not accessible.${retryStrategy ? ` Retries done: ${retryStrategy.limit}` : ""}`, error.message],
+        messages: [
+          `${endpoint} is not accessible.${retryStrategy ? ` Retries done: ${retryStrategy.limit}` : ""}`,
+          error.message,
+        ],
         pass: false,
       }
     }
 
     const evaluator = EvaluatorFactory.getEvaluator(condition)
     return evaluator.evaluate(responseData)
+  }
+
+  private async reviewEvaluationResult(evaluationResult: EvaluationResult, rule: ValidationRule) {
+    const checkResult: CheckResult = {
+      name: rule.name,
+      date: new Date().toISOString(),
+      messages: evaluationResult.messages,
+    }
+    
+    console.log({ checkResult })
+
+    if (!evaluationResult.pass) {
+      this.validation.failedChecks.push(checkResult)
+      this.fraudScores.push(rule.failScore) // Increase the average
+    } else {
+      this.validation.passedChecks.push(checkResult)
+      this.fraudScores.push(0) // Decrease the average
+    }
   }
 
   private async createValidationId(): Promise<Validation["validationId"]> {

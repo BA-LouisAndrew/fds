@@ -10,6 +10,7 @@ import {
 
 export const resolvePrismaType = (validationRule: PrismaValidationRule): TSValidationRule => ({
   ...validationRule,
+  method: validationRule.method as TSValidationRule["method"],
   condition: validationRule.condition as BooleanCondition | Condition,
   retryStrategy: (validationRule.retryStrategy as RetryStrategy) ?? undefined,
   requestUrlParameter: (validationRule.requestUrlParameter as GenericObject) ?? undefined,

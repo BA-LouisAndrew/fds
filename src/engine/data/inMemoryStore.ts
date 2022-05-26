@@ -1,43 +1,31 @@
 import { DataStore } from "./dataStore"
 
 export class InMemoryStore extends DataStore {
-  map: Map<string, string> 
+  map: Map<string, string>
 
-  init(): Promise<void> {
-    return new Promise(resolve => {
-      this.map = new Map()
-      DataStore.setInstance(this)
+  async init(): Promise<void> {
+    this.map = new Map()
+    DataStore.setInstance(this)
 
-      if (process.env.NODE_ENV !== "test") {
-        console.log("> In-memory store initiated")
-      }
-      
-      resolve()
-    })
+    if (process.env.NODE_ENV !== "test") {
+      console.log("> In-memory store initiated")
+    }
   }
 
-  get(id: string): Promise<string> {
-    return new Promise(resolve => {
-      const value = this.map.get(id)
-      if (!value) {
-        resolve("")
-      } else {
-        resolve(value)
-      }
-    })
+  async get(id: string): Promise<string> {
+    const value = this.map.get(id)
+    return !value ? "" : value
   }
 
-  set(id: string, data: string): Promise<void> {
-    return new Promise(resolve => {
-      this.map.set(id, data)
-      resolve()
-    })
+  async set(id: string, data: string): Promise<void> {
+    this.map.set(id, data)
   }
 
-  delete(id: string): Promise<void> {
-    return new Promise(resolve => {
-      this.map.delete(id)
-      resolve()
-    })
+  async delete(id: string): Promise<void> {
+    this.map.delete(id)
+  }
+
+  async print(): Promise<string> {
+    return JSON.stringify([...this.map.entries()])
   }
 }

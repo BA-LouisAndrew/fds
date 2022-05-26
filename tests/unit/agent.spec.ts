@@ -3,6 +3,7 @@ import { mockReset } from "vitest-mock-extended"
 import { Agent } from "@/engine/request/agent"
 import { createMockContext, MockContext } from "@/engine/request/context"
 import { sampleRule } from "@/seed/rule"
+import { ValidationRule } from "@/types/rule"
 
 describe("Agent", () => {
   const mockContext: MockContext = createMockContext()
@@ -11,8 +12,9 @@ describe("Agent", () => {
   afterEach(() => mockReset(mockContext))
 
   it("passes the correct parameter to the request body", async () => {
-    const rule = {
+    const rule: ValidationRule = {
       ...sampleRule,
+      method: "POST",
       requestBody: {
         user: "$.firstName",
         foo: "bar",

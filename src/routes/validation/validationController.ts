@@ -6,10 +6,11 @@ import { ValidationEngine } from "@/engine/validationEngine"
 import { sampleCustomer } from "@/seed/customer"
 import { sampleValidation } from "@/seed/validation"
 import { Customer } from "@/types/customer"
-import { NotFound, ValidationErrorJSON } from "@/types/responses"
+import { NotFound, ValidationErrorJSON, WentWrong } from "@/types/responses"
 import { Validation } from "@/types/validation"
 
 import { RulesService } from "../rules/rulesService"
+import { ValidationSchedule, ValidationService } from "./validationService"
 
 @Route("validate")
 @Tags("Validation")
@@ -22,9 +23,19 @@ export class ValidationController extends Controller {
   @Example<Customer>(sampleCustomer)
   @SuccessResponse(201, "Validation started")
   @Response<ValidationErrorJSON>(422, "Validation Failed")
+  @Response<WentWrong>(400, "Bad Request")
   @Post()
-  public async validateCustomer(@Body() requestBody: Customer): Promise<Validation> {
-    return sampleValidation
+  public async validateCustomer(@Body() requestBody: Customer): Promise<ValidationSchedule | WentWrong> {
+    const { error, data } = await ValidationService.scheduleRulesetValidation(requestBody)
+    if (error) {
+      this.setStatus(400)
+      return {
+        message: error.message,
+        details: error.details || ""
+      }
+    }
+    
+    return data
   }
  
  /**
