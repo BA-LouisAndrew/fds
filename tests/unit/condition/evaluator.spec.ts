@@ -12,7 +12,6 @@ describe("Evaluator", () => {
       failMessage: "Status code doesn't equal to 200",
     }
     const evaluator = new ConditionEvaluator(condition)
-    afterEach(evaluator.flush)
 
     it("returns the correct result for a valid data", () => {
       const { pass, messages } = evaluator.evaluate({
@@ -39,7 +38,7 @@ describe("Evaluator", () => {
       })
 
       expect(pass).toBeFalsy()
-      expect(messages).toEqual(["Path $.statusCode is not reachable. Available paths: (status, foo)"])
+      expect(messages).toEqual(["Path $.statusCode is not reachable. Available paths: ($.status, $.foo)"])
     })
 
     it("returns the proper message if failMessage contains the special `$` identifier", () => {
@@ -52,7 +51,7 @@ describe("Evaluator", () => {
         statusCode: 300,
       })
 
-      expect(messages).toEqual("Status code doesn't equal to 200. Received: 300")
+      expect(messages).toEqual(["Status code doesn't equal to 200. Received: 300"])
     })
   })
   
@@ -76,8 +75,6 @@ describe("Evaluator", () => {
         any: conditions
       })
       
-      afterEach(evaluator.flush)
-      
       it("passes the evaluation if one of the condition passed", () => {
         const { pass, messages } = evaluator.evaluate({
           statusCode: 200,
@@ -96,7 +93,7 @@ describe("Evaluator", () => {
 
         expect(pass).toBeFalsy()
         expect(messages).toContain("Not a successful operation")
-        expect(messages).toContain("Status code doesn't equal to 20")
+        expect(messages).toContain("Status code doesn't equal to 200")
       })
       
       it("passes the evaluation if both of the condition passed", () => {
@@ -114,8 +111,6 @@ describe("Evaluator", () => {
       const evaluator = new BooleanConditionEvaluator({
         all: conditions
       })
-    
-      afterEach(evaluator.flush)
     
       it("fails the evaluation if only one of the condition passed", () => {
         const { pass, messages } = evaluator.evaluate({
@@ -135,7 +130,7 @@ describe("Evaluator", () => {
 
         expect(pass).toBeFalsy()
         expect(messages).toContain("Not a successful operation")
-        expect(messages).toContain("Status code doesn't equal to 20")
+        expect(messages).toContain("Status code doesn't equal to 200")
       })
     
       it("passes the evaluation if both of the condition passed", () => {
@@ -148,5 +143,16 @@ describe("Evaluator", () => {
         expect(messages).toEqual([])
       })
     })
+  })
+
+  it("fails the evaluation if the condition is not appropriate", () => {
+    const evaluator = new BooleanConditionEvaluator({})
+
+    const { pass, messages } = evaluator.evaluate({
+      statusCode: 200
+    })
+    
+    expect(pass).toBeFalsy()
+    expect(messages).toEqual(["Condition invalid! Please use either `any` or `all`"])
   })
 })

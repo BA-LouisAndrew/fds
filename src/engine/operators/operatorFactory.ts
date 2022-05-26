@@ -23,7 +23,7 @@ export class OperatorFactory {
       return this.nullishOperator
     }
 
-    const operator = this.operatorMap[operatorId]
+    const operator = operatorGroup[operatorId]
     if (!operator) {
       return this.nullishOperator
     }
