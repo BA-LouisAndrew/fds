@@ -16,6 +16,10 @@
    {
     "name": "Validation",
     "description": "Operations to run validation / get validation result"
+   },
+   {
+    "name": "Utils",
+    "description": "Utility endpoints for testing purposes"
    }
   ],
   "contact": {
