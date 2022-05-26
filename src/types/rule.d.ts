@@ -3,7 +3,7 @@
  * https://github.com/CacheControl/json-rules-engine/blob/master/docs/rules.md#constructorobject-optionsstring-json
  */
 
-import { Operator } from "./operators"
+import { OperatorType } from "./operators"
 
 /**
  * Model for the validation rule that would be stored in the database and evaluated during runtime.
@@ -82,7 +82,7 @@ export type Condition = {
    * Name of the operator that should be used$.validAddress to evaluate the condition.
    * @example 'equals' | 'contains'
    */
-  operator: Operator;
+  operator: OperatorType;
   /**
    * Type of the attribute to be validated.
    */
