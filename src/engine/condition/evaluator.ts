@@ -3,8 +3,13 @@ import jp from "jsonpath"
 import { BooleanCondition, Condition } from "@/types/rule"
 
 export type EvaluationResult = { messages: string[]; pass: boolean };
+const conditionKeys = ["path", "operator", "type", "value", "failMessage"]
 
 export class Evaluator<T extends Condition | BooleanCondition> {
+  static isConditionValid(condition: any) {
+    return condition !== null && Object.keys(condition).every((key) => conditionKeys.indexOf(key) !== -1)
+  }
+
   protected result: EvaluationResult
   protected condition: T
 
@@ -55,5 +60,12 @@ export class Evaluator<T extends Condition | BooleanCondition> {
     }
 
     return message
+  }
+}
+
+export class NullishEvaluator extends Evaluator<Condition> {
+  protected runEvaluation(): void {
+    this.result.pass = false
+    this.result.messages.push(`Condition invalid! Required properties are: (${conditionKeys.join(", ")})`)
   }
 }

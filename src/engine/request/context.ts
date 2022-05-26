@@ -5,7 +5,7 @@ export type Context = {
   client: Got;
 };
 
-export type MockContext = MockProxy<Context>
+export type MockContext = MockProxy<Context>;
 
 export const createContext = (): Context => {
   return {

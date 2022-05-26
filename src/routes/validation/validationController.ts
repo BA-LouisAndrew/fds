@@ -2,7 +2,6 @@ import { ValidationRule } from "@prisma/client"
 import { Request as ExRequest, Response as ExResponse } from "express"
 import { Body, Controller, Example, Get, Path, Post, Response,Route, SuccessResponse, Tags } from "tsoa"
 
-import { EvaluationResult } from "@/engine/condition/evaluator"
 import { ValidationEngine } from "@/engine/validationEngine"
 import { sampleCustomer } from "@/seed/customer"
 import { sampleValidation } from "@/seed/validation"
@@ -58,7 +57,7 @@ export class ValidationController extends Controller {
    */
   @Response<NotFound>(404, "Not Found")
   @Post("/single/{ruleName}")
- public async validateSingleRule(@Body() requestBody: Customer, @Path() ruleName: ValidationRule["name"]): Promise<EvaluationResult | NotFound> {
+ public async validateSingleRule(@Body() requestBody: Customer, @Path() ruleName: ValidationRule["name"]): Promise<Validation | NotFound> {
    const { data, error } = await RulesService.getRule(ruleName)
    if (error) {
      this.setStatus(404)
@@ -67,7 +66,7 @@ export class ValidationController extends Controller {
      }
    }
 
-   return await new ValidationEngine().validateSingleRule(data)
+   return await new ValidationEngine<Customer>().validateSingleRule(data, requestBody)
  }
 }
 

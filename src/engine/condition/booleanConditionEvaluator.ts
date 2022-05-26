@@ -1,11 +1,11 @@
-import { BooleanCondition } from "@/types/rule"
+import { BooleanCondition, Condition } from "@/types/rule"
 
 import { ConditionEvaluator } from "./conditionEvaluator"
 import { EvaluationResult, Evaluator } from "./evaluator"
 
 export class BooleanConditionEvaluator extends Evaluator<BooleanCondition> {
-  get booleanIdentifier(): "any" | "all" | "null" {
-    const keys = Object.keys(this.condition)
+  static getBooleanIdentifier(condition: Condition | BooleanCondition): "any" | "all" | "null" {
+    const keys = Object.keys(condition)
     const isUsingAny = keys.includes("any")
     const isUsingAll = keys.includes("all")
 
@@ -18,6 +18,10 @@ export class BooleanConditionEvaluator extends Evaluator<BooleanCondition> {
     }
 
     return isUsingAll ? "all" : "any"
+  }
+
+  get booleanIdentifier() {
+    return BooleanConditionEvaluator.getBooleanIdentifier(this.condition)
   }
 
   runEvaluation(data: any): void {

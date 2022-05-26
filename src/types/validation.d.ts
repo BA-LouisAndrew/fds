@@ -1,6 +1,6 @@
 import { Customer } from "./customer"
 
-export interface Validation {
+export interface Validation<T = Customer> {
   /**
    * Unique identifier (UUIDv4) of the validation process.
    * @pattern [0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}
@@ -28,7 +28,7 @@ export interface Validation {
   /**
    * Details of rule check that's currently running.
    */
-  currentlyRunning: {
+  currentlyRunning?: {
     /**
      * The number of the currently running check in the order.
      */
@@ -41,11 +41,11 @@ export interface Validation {
   /**
    * Checks that passed.
    */
-  passedChecks: PassedCheck[];
+  passedChecks: CheckResult[];
   /**
    * Checks that failed.
    */
-  failedChecks: FailedCheck[];
+  failedChecks: CheckResult[];
   /**
    * Name of the rules that skipped the check process.
    */
@@ -53,10 +53,10 @@ export interface Validation {
   /**
    * Additional information on the validation process.
    */
-  additionalInfo: ValidationAdditionalInfo
+  additionalInfo: ValidationAdditionalInfo<T>
 }
 
-export type PassedCheck = {
+export type CheckResult = {
   /**
    * Name of the rules, whose check passes.
    */
@@ -65,24 +65,13 @@ export type PassedCheck = {
    * Date time information on when the check failed.
    */
   date: string;
+  /**
+   * Messages that give information regarding the check.
+   */
+  messages?: string[]
 };
 
-export type FailedCheck = {
-  /**
-   * Name of the rules that failed the check.
-   */
-  name: string;
-  /**
-   * Message that gives information on why the check failed.
-   */
-  message: string;
-  /**
-   * Date time information on when the check failed.
-   */
-  date: string;
-};
-
-export type ValidationAdditionalInfo = {
+export type ValidationAdditionalInfo<T> = {
  /**
   * Date time information on when the validation started.
   */
@@ -94,5 +83,5 @@ export type ValidationAdditionalInfo = {
  /**
   * Additional information regarding the validation customer.
   */
- customerInformation?: Customer
+ customerInformation?: T
 }

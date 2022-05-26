@@ -21,5 +21,5 @@ export const arrayOperators: Record<ArrayOperatorIds, ArrayOperator> = {
   ),
   excl: new ArrayOperator("excl", (a, b) => b.indexOf(a) === -1),
   incl: new ArrayOperator("incl", (a, b) => b.indexOf(a) !== -1),
-  len: new ArrayOperator("len", (a, b) => b.length === a).setValidateFunction((a) => typeof a === "number"),
+  len: new ArrayOperator("len", (a, b) => b.length == a).setValidateFunction((a) => typeof a === "number"),
 }

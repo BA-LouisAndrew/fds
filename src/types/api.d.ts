@@ -1,6 +1,7 @@
 export type ApiErrorResponse = {
   error: {
     message: string;
+    details?: string
   };
   data: null;
 };
@@ -8,7 +9,6 @@ export type ApiErrorResponse = {
 export type ApiSuccessResponse<T> = {
   data: T;
   error: null;
-  
 };
 
 export type ApiResponse<T> = ApiErrorResponse | ApiSuccessResponse<T>;

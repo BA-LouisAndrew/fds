@@ -7,7 +7,11 @@ export class InMemoryStore extends DataStore {
     return new Promise(resolve => {
       this.map = new Map()
       DataStore.setInstance(this)
-      console.log("> In-memory store initiated")
+
+      if (process.env.NODE_ENV !== "test") {
+        console.log("> In-memory store initiated")
+      }
+      
       resolve()
     })
   }
