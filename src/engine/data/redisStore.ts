@@ -28,7 +28,10 @@ export class RedisStore extends DataStore {
   async init() {
     await this.client.connect()
     DataStore.setInstance(this)
-    console.log("> Redis instance connected.")
+    
+    if (process.env.NODE_ENV !== "test") {
+      console.log("> Redis instance connected.")
+    }
   }
 
 

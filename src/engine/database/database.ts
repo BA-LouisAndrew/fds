@@ -16,7 +16,9 @@ export class Database {
 
   static setCache(cache: DataStore) {
     this.cache = cache
-    console.log("> Cache is set")
+    if (process.env.NODE_ENV !== "test") {
+      console.log("> Cache is set")
+    }
   }
 
   private static get prisma(): PrismaClient {
@@ -50,7 +52,7 @@ export class Database {
     if (!this.cache) {
       return null
     }
-    
+
     const isCached = await this.cache.get(`${ruleName}.set`)
     if (isCached !== "true") {
       return null
@@ -98,6 +100,8 @@ export class Database {
 
   async init() {
     await Database.prisma.$connect()
-    console.log("> Database is up")
+    if (process.env.NODE_ENV !== "test") {
+      console.log("> Database is up")
+    }
   }
 }
