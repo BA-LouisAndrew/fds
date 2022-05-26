@@ -1,9 +1,12 @@
-import { Method, Response } from "got"
+import { Method, Response as GotResponse } from "got"
 import { query } from "jsonpath"
 
+import { ApiResponse } from "@/types/api"
 import { GenericObject, ValidationRule } from "@/types/rule"
 
 import { Context } from "./context"
+
+type FireRequestReturnType<ResponseType> = ApiResponse<GotResponse<ResponseType>>;
 
 export class Agent {
   private static context: Context
@@ -16,7 +19,10 @@ export class Agent {
     this.context = context
   }
 
-  static async fireRequest<DataType, ResponseType = any>(rule: ValidationRule, data: DataType): Promise<Response<ResponseType> | null> {
+  static async fireRequest<DataType, ResponseType = any>(
+    rule: ValidationRule,
+    data: DataType,
+  ): Promise<FireRequestReturnType<ResponseType>> {
     const { endpoint, method, retryStrategy, requestBody } = rule
 
     try {
@@ -25,11 +31,19 @@ export class Agent {
         retry: retryStrategy || {},
         json: this.getJSONBody(requestBody, data),
       })
-      
-      return response
-    }  catch {
+
+      return {
+        error: null,
+        data: response,
+      }
+    } catch (e) {
       // Handle error here
-      return null
+      return {
+        error: {
+          message: e
+        },
+        data: null,
+      }
     }
   }
 

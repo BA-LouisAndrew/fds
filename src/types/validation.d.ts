@@ -41,11 +41,11 @@ export interface Validation {
   /**
    * Checks that passed.
    */
-  passedChecks: PassedCheck[];
+  passedChecks: CheckResult[];
   /**
    * Checks that failed.
    */
-  failedChecks: FailedCheck[];
+  failedChecks: CheckResult[];
   /**
    * Name of the rules that skipped the check process.
    */
@@ -56,7 +56,7 @@ export interface Validation {
   additionalInfo: ValidationAdditionalInfo
 }
 
-export type PassedCheck = {
+export type CheckResult = {
   /**
    * Name of the rules, whose check passes.
    */
@@ -65,21 +65,10 @@ export type PassedCheck = {
    * Date time information on when the check failed.
    */
   date: string;
-};
-
-export type FailedCheck = {
   /**
-   * Name of the rules that failed the check.
+   * Messages that give information regarding the check.
    */
-  name: string;
-  /**
-   * Message that gives information on why the check failed.
-   */
-  message: string;
-  /**
-   * Date time information on when the check failed.
-   */
-  date: string;
+  message?: string[]
 };
 
 export type ValidationAdditionalInfo = {

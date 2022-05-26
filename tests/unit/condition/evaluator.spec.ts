@@ -54,33 +54,36 @@ describe("Evaluator", () => {
       expect(messages).toEqual(["Status code doesn't equal to 200. Received: 300"])
     })
   })
-  
+
   describe("Boolean condition evaluator", () => {
-    const conditions: Condition[] = [{
-      path: "$.statusCode",
-      operator: "eq",
-      type: "number",
-      value: 200,
-      failMessage: "Status code doesn't equal to 200",
-    }, {
-      path: "$.success",
-      operator: "eq",
-      type: "boolean",
-      value: true,
-      failMessage: "Not a successful operation"
-    }]
-    
+    const conditions: Condition[] = [
+      {
+        path: "$.statusCode",
+        operator: "eq",
+        type: "number",
+        value: 200,
+        failMessage: "Status code doesn't equal to 200",
+      },
+      {
+        path: "$.success",
+        operator: "eq",
+        type: "boolean",
+        value: true,
+        failMessage: "Not a successful operation",
+      },
+    ]
+
     describe("ANY Boolean evaluator", () => {
       const evaluator = new BooleanConditionEvaluator({
-        any: conditions
+        any: conditions,
       })
-      
+
       it("passes the evaluation if one of the condition passed", () => {
         const { pass, messages } = evaluator.evaluate({
           statusCode: 200,
-          success: false
+          success: false,
         })
-        
+
         expect(pass).toBeTruthy()
         expect(messages).toEqual(["Not a successful operation"])
       })
@@ -88,36 +91,36 @@ describe("Evaluator", () => {
       it("fails the evaluation if both of the conditions failed", () => {
         const { pass, messages } = evaluator.evaluate({
           statusCode: 300,
-          success: false
+          success: false,
         })
 
         expect(pass).toBeFalsy()
         expect(messages).toContain("Not a successful operation")
         expect(messages).toContain("Status code doesn't equal to 200")
       })
-      
+
       it("passes the evaluation if both of the condition passed", () => {
         const { pass, messages } = evaluator.evaluate({
           statusCode: 200,
-          success: true
+          success: true,
         })
-      
+
         expect(pass).toBeTruthy()
         expect(messages).toEqual([])
       })
     })
-    
-    describe("ALL Boolean evaluator" , () => {
+
+    describe("ALL Boolean evaluator", () => {
       const evaluator = new BooleanConditionEvaluator({
-        all: conditions
+        all: conditions,
       })
-    
+
       it("fails the evaluation if only one of the condition passed", () => {
         const { pass, messages } = evaluator.evaluate({
           statusCode: 200,
-          success: false
+          success: false,
         })
-      
+
         expect(pass).toBeFalsy()
         expect(messages).toEqual(["Not a successful operation"])
       })
@@ -125,20 +128,20 @@ describe("Evaluator", () => {
       it("fails the evaluation if both of the conditions failed", () => {
         const { pass, messages } = evaluator.evaluate({
           statusCode: 300,
-          success: false
+          success: false,
         })
 
         expect(pass).toBeFalsy()
         expect(messages).toContain("Not a successful operation")
         expect(messages).toContain("Status code doesn't equal to 200")
       })
-    
+
       it("passes the evaluation if both of the condition passed", () => {
         const { pass, messages } = evaluator.evaluate({
           statusCode: 200,
-          success: true
+          success: true,
         })
-    
+
         expect(pass).toBeTruthy()
         expect(messages).toEqual([])
       })
@@ -149,10 +152,22 @@ describe("Evaluator", () => {
     const evaluator = new BooleanConditionEvaluator({})
 
     const { pass, messages } = evaluator.evaluate({
-      statusCode: 200
+      statusCode: 200,
     })
-    
+
     expect(pass).toBeFalsy()
     expect(messages).toEqual(["Condition invalid! Please use either `any` or `all`"])
+  })
+
+  it("returns a `null` boolean identifier if a condition is not appropriate", () => {
+    expect(
+      BooleanConditionEvaluator.getBooleanIdentifier({
+        path: "$.statusCode",
+        operator: "eq",
+        type: "number",
+        value: 200,
+        failMessage: "Status code doesn't equal to 200",
+      }),
+    ).toEqual("null")
   })
 })
