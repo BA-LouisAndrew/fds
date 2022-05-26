@@ -1,12 +1,14 @@
 import { Method, Response as GotResponse } from "got"
-import { query } from "jsonpath"
+import jp from "jsonpath"
 
 import { ApiResponse } from "@/types/api"
 import { GenericObject, ValidationRule } from "@/types/rule"
 
 import { Context } from "./context"
 
-type FireRequestReturnType<ResponseType> = ApiResponse<GotResponse<ResponseType>>;
+type FireRequestReturnType = ApiResponse<
+  Pick<GotResponse, "statusCode" | "statusMessage" | "rawBody" | "retryCount"> & { body: any }
+>;
 
 export class Agent {
   private static context: Context
@@ -19,10 +21,10 @@ export class Agent {
     this.context = context
   }
 
-  static async fireRequest<DataType, ResponseType = any>(
+  static async fireRequest<DataType, ResponseType = string>(
     rule: ValidationRule,
     data: DataType,
-  ): Promise<FireRequestReturnType<ResponseType>> {
+  ): Promise<FireRequestReturnType> {
     const { endpoint, method, retryStrategy, requestBody } = rule
 
     try {
@@ -32,19 +34,40 @@ export class Agent {
         json: this.getJSONBody(requestBody, data),
       })
 
+      const { statusCode, statusMessage, body, rawBody, retryCount } = response
+
       return {
         error: null,
-        data: response,
+        data: {
+          statusCode,
+          statusMessage,
+          rawBody,
+          retryCount,
+          body: this.parseResponseBody(body),
+        },
       }
     } catch (e) {
+      console.log(e)
       // Handle error here
       return {
         error: {
-          message: e
+          message: e,
         },
         data: null,
       }
     }
+  }
+
+  private static parseResponseBody(body: any) {
+    try {
+      if (typeof body === "string") {
+        return JSON.parse(body)
+      }
+    } catch {
+      //
+    }
+
+    return body
   }
 
   private static getJSONBody(requestBody: GenericObject | undefined, data: any) {
@@ -54,7 +77,7 @@ export class Agent {
 
     return Object.entries(requestBody)
       .map(([key, value]) => {
-        const dataFromPath = query(data, value)[0]
+        const dataFromPath = jp.query(data, value)[0]
         return {
           [key]: dataFromPath ?? value,
         }

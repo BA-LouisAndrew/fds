@@ -21,7 +21,7 @@ export const sampleValidation: Validation = {
     {
       date: new Date("11-10-2000").toISOString(),
       name: "failed-check-1",
-      message: "IP is blacklisted"
+      messages: ["IP is blacklisted"]
     }
   ],
   skippedChecks: ["skipped-check-1", "skipped-check-2"],

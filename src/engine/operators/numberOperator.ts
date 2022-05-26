@@ -7,7 +7,7 @@ export class NumberOperator extends Operator<number, NumberOperatorIds> {
 }
 
 export const numberOperators: Record<NumberOperatorIds, NumberOperator> = {
-  eq: new NumberOperator("eq", (a, b) => a === b),
+  eq: new NumberOperator("eq", (a, b) => b === a),
   gt: new NumberOperator("gt", (a, b) => b > a),
   gte: new NumberOperator("gte", (a, b) => b >= a),
   lt: new NumberOperator("lt", (a, b) => b < a),

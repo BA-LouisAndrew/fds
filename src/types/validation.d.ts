@@ -1,6 +1,6 @@
 import { Customer } from "./customer"
 
-export interface Validation {
+export interface Validation<T = Customer> {
   /**
    * Unique identifier (UUIDv4) of the validation process.
    * @pattern [0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}
@@ -28,7 +28,7 @@ export interface Validation {
   /**
    * Details of rule check that's currently running.
    */
-  currentlyRunning: {
+  currentlyRunning?: {
     /**
      * The number of the currently running check in the order.
      */
@@ -53,7 +53,7 @@ export interface Validation {
   /**
    * Additional information on the validation process.
    */
-  additionalInfo: ValidationAdditionalInfo
+  additionalInfo: ValidationAdditionalInfo<T>
 }
 
 export type CheckResult = {
@@ -68,10 +68,10 @@ export type CheckResult = {
   /**
    * Messages that give information regarding the check.
    */
-  message?: string[]
+  messages?: string[]
 };
 
-export type ValidationAdditionalInfo = {
+export type ValidationAdditionalInfo<T> = {
  /**
   * Date time information on when the validation started.
   */
@@ -83,5 +83,5 @@ export type ValidationAdditionalInfo = {
  /**
   * Additional information regarding the validation customer.
   */
- customerInformation?: Customer
+ customerInformation?: T
 }
