@@ -1,11 +1,16 @@
+import { ValidationRule } from "@prisma/client"
 import { Request as ExRequest, Response as ExResponse } from "express"
 import { Body, Controller, Example, Get, Path, Post, Response,Route, SuccessResponse, Tags } from "tsoa"
 
+import { EvaluationResult } from "@/engine/condition/evaluator"
+import { ValidationEngine } from "@/engine/validationEngine"
 import { sampleCustomer } from "@/seed/customer"
 import { sampleValidation } from "@/seed/validation"
 import { Customer } from "@/types/customer"
 import { NotFound, ValidationErrorJSON } from "@/types/responses"
 import { Validation } from "@/types/validation"
+
+import { RulesService } from "../rules/rulesService"
 
 @Route("validate")
 @Tags("Validation")
@@ -16,9 +21,9 @@ export class ValidationController extends Controller {
   * @param requestBody Customer, on which the validation should be executed.
   */
   @Example<Customer>(sampleCustomer)
- @SuccessResponse(201, "Validation started")
- @Response<ValidationErrorJSON>(422, "Validation Failed")
- @Post()
+  @SuccessResponse(201, "Validation started")
+  @Response<ValidationErrorJSON>(422, "Validation Failed")
+  @Post()
   public async validateCustomer(@Body() requestBody: Customer): Promise<Validation> {
     return sampleValidation
   }
@@ -45,6 +50,25 @@ export class ValidationController extends Controller {
       validationId,
     }
   }
+
+  /**
+   * Testing endpoint to execute a validation on a **SINGLE** rule.
+   * @param requestBody 
+   * @param ruleName 
+   */
+  @Response<NotFound>(404, "Not Found")
+  @Post("/single/{ruleName}")
+ public async validateSingleRule(@Body() requestBody: Customer, @Path() ruleName: ValidationRule["name"]): Promise<EvaluationResult | NotFound> {
+   const { data, error } = await RulesService.getRule(ruleName)
+   if (error) {
+     this.setStatus(404)
+     return {
+       message: error.message,
+     }
+   }
+
+   return await new ValidationEngine().validateSingleRule(data)
+ }
 }
 
 export const subscribeToValidationProgress = async (request: ExRequest, response: ExResponse) => {
