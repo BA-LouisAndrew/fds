@@ -36,7 +36,7 @@ export interface ValidationRule {
   /**
    * HTTP method to be used to call the external check endpoint.
    */
-  method: string; // TODO: validate possible HTTP method
+  method: "GET" | "PUT" | "POST"; // TODO: validate possible HTTP method
   /**
    * Amount of score that should be incremented to the resulting fraud score if
    * the validation failed.

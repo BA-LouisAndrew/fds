@@ -11,16 +11,23 @@ export class ValidationEngine<T> {
   private validation: Validation<T>
   private fraudScores: number[]
 
-  get validationResult(): Validation<T> {
+  private get validationResult(): Validation<T> {
     return { ...this.validation, fraudScore: this.resultingFraudScore }
   }
 
-  get resultingFraudScore() {
+  private get resultingFraudScore() {
     return this.fraudScores.reduce((a, b) => a + b, 0) / this.fraudScores.length
   }
 
-  get runnableRules() {
+  private get runnableRules() {
     return this.validation.totalChecks - this.validation.skippedChecks.length
+  }
+  
+  async scheduleRulesetValidation(ruleset: ValidationRule[], data: T): Promise<Validation<T>> {
+    await this.constructValidationObject(ruleset, data)
+    this.validateRuleset(ruleset, data)
+    
+    return this.validationResult
   }
 
   async validateRuleset(ruleset: ValidationRule[], data: T): Promise<Validation<T>> {
@@ -89,6 +96,8 @@ export class ValidationEngine<T> {
       date: new Date().toISOString(),
       messages: evaluationResult.messages,
     }
+    
+    console.log({ checkResult })
 
     if (!evaluationResult.pass) {
       this.validation.failedChecks.push(checkResult)

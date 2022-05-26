@@ -25,13 +25,13 @@ export class Agent {
     rule: ValidationRule,
     data: DataType,
   ): Promise<FireRequestReturnType> {
-    const { endpoint, method, retryStrategy, requestBody } = rule
+    const { endpoint, method, retryStrategy } = rule
 
     try {
       const response = await this.client<ResponseType>(endpoint, {
         method: method as Method,
         retry: retryStrategy || {},
-        json: this.getJSONBody(requestBody, data),
+        json: this.getJSONBody(rule, data),
       })
 
       const { statusCode, statusMessage, body, rawBody, retryCount } = response
@@ -70,8 +70,8 @@ export class Agent {
     return body
   }
 
-  private static getJSONBody(requestBody: GenericObject | undefined, data: any) {
-    if (!requestBody) {
+  private static getJSONBody({ requestBody, method }: ValidationRule, data: any) {
+    if (method === "GET" || !requestBody) {
       return undefined
     }
 
