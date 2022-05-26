@@ -35,4 +35,9 @@ export class UtilityController extends Controller {
       success: true,
     }
   }
+
+  @Get("/printCache")
+  public async printCache(): Promise<string> {
+    return UtilityService.printCache()
+  }
 }
