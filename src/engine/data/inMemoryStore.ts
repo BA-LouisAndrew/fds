@@ -40,6 +40,6 @@ export class InMemoryStore extends DataStore {
   }
 
   async print(): Promise<string> {
-    return JSON.stringify([...this.map.entries()])
+    return JSON.stringify([...this.map.entries()].map(([key, value]) => [key, JSON.parse(value)]))
   }
 }

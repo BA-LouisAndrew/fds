@@ -5,6 +5,7 @@ import { Validation, ValidationEventResult, ValidationEventStatus } from "@/type
 
 import { EvaluationResult } from "./condition/evaluator"
 import { EvaluatorFactory } from "./condition/evaluatorFactory"
+import { DataStore } from "./data/dataStore"
 import { Agent } from "./request/agent"
 
 type ValidationEnginePropertyType<T> = Omit<Validation<T>, "fraudScore" | "passedChecks" | "failedChecks">;
@@ -12,6 +13,7 @@ type ValidationEnginePropertyType<T> = Omit<Validation<T>, "fraudScore" | "passe
 export class ValidationEngine<T> {
   private validation: ValidationEnginePropertyType<T>
   private fraudScores: number[]
+  private store = DataStore.getInstance()
 
   private get validationResult(): Validation<T> {
     return {
@@ -52,7 +54,7 @@ export class ValidationEngine<T> {
 
     for await (const rule of ruleset.filter(({ skip }) => !skip)) {
       const evaluationResult = await this.evaluateRule(rule, data)
-      this.reviewEvaluationResult(evaluationResult, rule)
+      await this.reviewEvaluationResult(evaluationResult, rule)
     }
     
     await this.afterValidation()	
@@ -64,7 +66,7 @@ export class ValidationEngine<T> {
     await this.constructValidationObject([rule], data)
 
     const evaluationResult = await this.evaluateRule(rule, data)
-    this.reviewEvaluationResult(evaluationResult, rule)
+    await this.reviewEvaluationResult(evaluationResult, rule)
 
     await this.afterValidation()
 
@@ -73,6 +75,7 @@ export class ValidationEngine<T> {
 
   private async constructValidationObject(ruleset: ValidationRule[], data: T) {
     const validationId = await this.createValidationId()
+
     this.validation = {
       validationId,
       totalChecks: ruleset.length,
@@ -93,7 +96,9 @@ export class ValidationEngine<T> {
           messages: [],
         })),
     }
+
     this.fraudScores = []
+    await this.pushToDatastore()
   }
 
   private async evaluateRule(rule: ValidationRule, data: T): Promise<EvaluationResult> {
@@ -130,6 +135,11 @@ export class ValidationEngine<T> {
     }
 
     this.fraudScores.push(pass ? 0 : rule.failScore)
+    await this.pushToDatastore()
+  }
+  
+  private async pushToDatastore() {
+    await this.store.set(this.validation.validationId, JSON.stringify(this.validation))
   }
 
   private async createValidationId(): Promise<Validation["validationId"]> {

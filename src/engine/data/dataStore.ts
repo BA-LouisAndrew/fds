@@ -1,7 +1,7 @@
 
 export abstract class DataStore {
   private static instance: DataStore
-  private static TTL = 3_600
+  static TTL = 3_600
 
   static getInstance() {
     return this.instance

@@ -44,7 +44,7 @@ export class RedisStore extends DataStore {
   }
 
   async set(id: string, data: string): Promise<void> {
-    await this.client.set(id, data)
+    await this.client.setEx(id, DataStore.TTL, data)
   }
 
   async delete(id: string): Promise<void> {
