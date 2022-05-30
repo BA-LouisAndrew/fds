@@ -11,22 +11,26 @@ export const sampleValidation: Validation = {
   currentlyRunning: {
     number: 3,
     name: sampleRule.name,
-  
   },
-  passedChecks: [{
-    date: new Date("10-10-2000").toISOString(),
-    name: "passed-check-1"
-  }],
+  passedChecks: [
+    {
+      name: "passed-check-1",
+      dateEnded: null,
+      dateStarted: null
+    },
+  ],
   failedChecks: [
     {
-      date: new Date("11-10-2000").toISOString(),
+      dateEnded: null,
+      dateStarted: null,
       name: "failed-check-1",
-      messages: ["IP is blacklisted"]
-    }
+      messages: ["IP is blacklisted"],
+    },
   ],
   skippedChecks: ["skipped-check-1", "skipped-check-2"],
   additionalInfo: {
     startDate: new Date("09-10-2000").toISOString(),
-    customerInformation: sampleCustomer
-  }
+    customerInformation: sampleCustomer,
+  },
+  events: []
 }
