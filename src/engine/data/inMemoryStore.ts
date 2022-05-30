@@ -1,14 +1,27 @@
 import { DataStore } from "./dataStore"
 
 export class InMemoryStore extends DataStore {
+  static MAX_SIZE = 100
+
   map: Map<string, string>
+  keys: string[]
 
   async init(): Promise<void> {
     this.map = new Map()
+    this.keys = []
     DataStore.setInstance(this)
 
     if (process.env.NODE_ENV !== "test") {
       console.log("> In-memory store initiated")
+    }
+  }
+  
+  async validateKeys() {
+    if (this.keys.length === InMemoryStore.MAX_SIZE) {
+      const firstKey = this.keys.shift()
+      if (firstKey) {
+        await this.delete(firstKey)
+      }
     }
   }
 
@@ -18,6 +31,7 @@ export class InMemoryStore extends DataStore {
   }
 
   async set(id: string, data: string): Promise<void> {
+    await this.validateKeys()
     this.map.set(id, data)
   }
 

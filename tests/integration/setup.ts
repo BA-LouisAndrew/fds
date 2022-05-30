@@ -5,7 +5,7 @@ import { Database } from "@/engine/database/database"
 
 export const initTestingServer = async () => {
   const mockContext = createMockContext()
-  const store = initStore(false)
+  const store = initStore("in-memory")
   const database = new Database(mockContext)
 
   await store.init()

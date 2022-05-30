@@ -4,15 +4,16 @@ import { createContext as createDatabaseContext } from "./engine/database/contex
 import { Database } from "./engine/database/database"
 import { Agent } from "./engine/request/agent"
 import { createContext as createRequestContext } from "./engine/request/context"
+import { Config } from "./types/config"
 
 const port = process.env.PORT || 8000
-const CONFIG = {
+const CONFIG: Config = {
   enableCache: false,
-  withRedis: false,
+  dataStore: "in-memory",
 };
 
 (async () => {
-  const store = initStore(CONFIG.withRedis) // In memory store
+  const store = initStore(CONFIG.dataStore) // In memory store
   const database = new Database(createDatabaseContext())
 
   await database.init()
