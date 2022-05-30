@@ -8,7 +8,7 @@ import { Config } from "./types/config"
 
 const port = process.env.PORT || 8000
 const CONFIG: Config = {
-  enableCache: false,
+  enableCache: true,
   dataStore: "in-memory",
 };
 

@@ -34,6 +34,32 @@ export class Database {
       return
     }
 
+    await this.cache.set(rule.name, JSON.stringify(rule))
+  }
+  
+  static async getCachedValidationRule(ruleName: string): Promise<ValidationRule | null> {
+    if (!this.cache) {
+      return null
+    }
+    
+    const value = await this.cache.get(ruleName)
+    if (!value) {
+      return null
+    }
+    
+    try {
+      const parsedValue = JSON.parse(value)
+      return parsedValue
+    } catch {
+      return null
+    }
+  }
+
+  static async _cacheValidationRule(rule: ValidationRule): Promise<void> {
+    if (!this.cache) {
+      return
+    }
+
     await this.cache.set(`${rule.name}.set`, "true")
     await Promise.all(
       Object.keys(rule).map(async (key) => {
@@ -48,7 +74,7 @@ export class Database {
     )
   }
 
-  static async getCachedValidationRule(ruleName: string): Promise<ValidationRule | null> {
+  static async _getCachedValidationRule(ruleName: string): Promise<ValidationRule | null> {
     if (!this.cache) {
       return null
     }

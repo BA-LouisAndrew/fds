@@ -1,13 +1,15 @@
 import nock from "nock"
 
+import { initStore } from "@/engine/data/initStore"
 import { Agent } from "@/engine/request/agent"
 import { createContext } from "@/engine/request/context"
 import { ValidationEngine } from "@/engine/validationEngine"
 import { ValidationRule } from "@/types/rule"
 
 describe("Validation engine: Validate rule set", () => {
-  beforeAll(() => {
+  beforeAll(async () => {
     Agent.setClient(createContext())
+    await initStore("in-memory").init()
   })
 
   const ruleA: ValidationRule = {
