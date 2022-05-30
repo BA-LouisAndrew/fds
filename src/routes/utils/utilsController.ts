@@ -15,7 +15,7 @@ type NameValidationReturnType = {
 export class UtilityController extends Controller {
   @Post("/nameValidation")
   public async validateCustomerName(@Body() requestBody: { name: string }): Promise<NameValidationReturnType> {
-    const isNameValid = UtilityService.validateName(requestBody.name)
+    const isNameValid = await UtilityService.validateName(requestBody.name)
     if (isNameValid) {
       return {
         success: true,

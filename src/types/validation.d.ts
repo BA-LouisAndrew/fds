@@ -41,11 +41,11 @@ export interface Validation<T = Customer> {
   /**
    * Checks that passed.
    */
-  passedChecks: CheckResult[];
+  passedChecks: ValidationEventResult[];
   /**
    * Checks that failed.
    */
-  failedChecks: CheckResult[];
+  failedChecks: ValidationEventResult[];
   /**
    * Name of the rules that skipped the check process.
    */
@@ -53,35 +53,52 @@ export interface Validation<T = Customer> {
   /**
    * Additional information on the validation process.
    */
-  additionalInfo: ValidationAdditionalInfo<T>
+  additionalInfo: ValidationAdditionalInfo<T>;
+  /**
+   * A collection of validation events. Containing validation details on passed, check and not started validations.
+   */
+  events: ValidationEvent[]
 }
 
-export type CheckResult = {
+export type ValidationEventResult = Omit<ValidationEvent, "status">;
+
+export type ValidationEventStatus = "NOT_STARTED" | "FAILED" | "PASSED" | "RUNNING";
+
+export type ValidationEvent = {
   /**
-   * Name of the rules, whose check passes.
+   * Name of the rule.
    */
   name: string;
   /**
-   * Date time information on when the check failed.
+   * Status of the validation event.
+   * @example "NOT_STARTED"
    */
-  date: string;
+  status: ValidationEventStatus;
   /**
-   * Messages that give information regarding the check.
+   * ISO stringified date of when the validation event started.
    */
-  messages?: string[]
+  dateStarted: string | null;
+  /**
+   * ISO stringified date of when the validation event ended.
+   */
+  dateEnded: string | null;
+  /**
+   * Mesages that give informations on the validation event.
+   */
+  messages?: string[];
 };
 
 export type ValidationAdditionalInfo<T> = {
- /**
-  * Date time information on when the validation started.
-  */
- startDate: string
- /**
-  * Date time information on when the validation ended.
-  */
- endDate?: string
- /**
-  * Additional information regarding the validation customer.
-  */
- customerInformation?: T
-}
+  /**
+   * Date time information on when the validation started.
+   */
+  startDate: string;
+  /**
+   * Date time information on when the validation ended.
+   */
+  endDate?: string;
+  /**
+   * Additional information regarding the validation customer.
+   */
+  customerInformation?: T;
+};
