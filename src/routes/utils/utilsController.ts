@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Route, Tags } from "tsoa"
+import { Body, Controller, Get, Post, Query, Route, Tags } from "tsoa"
 
 import { UtilityService } from "./utilsService"
 
@@ -14,8 +14,11 @@ type NameValidationReturnType = {
 @Tags("Utils")
 export class UtilityController extends Controller {
   @Post("/nameValidation")
-  public async validateCustomerName(@Body() requestBody: { name: string }): Promise<NameValidationReturnType> {
-    const isNameValid = await UtilityService.validateName(requestBody.name)
+  public async validateCustomerName(
+    @Body() requestBody: { name: string },
+    @Query() timeout?: number,
+  ): Promise<NameValidationReturnType> {
+    const isNameValid = await UtilityService.validateName(requestBody.name, timeout)
     if (isNameValid) {
       return {
         success: true,
@@ -30,16 +33,16 @@ export class UtilityController extends Controller {
   }
 
   @Get("/alwaysTrue")
-  public async alwaysTrueValidation(): Promise<{ success: boolean }> {
+  public async alwaysTrueValidation(@Query() timeout?: number): Promise<{ success: boolean }> {
     return {
-      success: true,
+      success: await UtilityService.alwaysTrue(timeout),
     }
   }
 
   @Get("/printCache")
-  public async printCache(): Promise<{data: any}> {
+  public async printCache(): Promise<{ data: any }> {
     return {
-      data: JSON.parse(await UtilityService.printCache()) 
+      data: JSON.parse(await UtilityService.printCache()),
     }
   }
 }
