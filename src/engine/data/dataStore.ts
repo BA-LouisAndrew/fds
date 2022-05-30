@@ -1,6 +1,7 @@
 
 export abstract class DataStore {
   private static instance: DataStore
+  private static TTL = 3_600
 
   static getInstance() {
     return this.instance
@@ -8,6 +9,10 @@ export abstract class DataStore {
 
   protected static setInstance(store: DataStore) {
     DataStore.instance = store
+  }
+  
+  public static setTTL(ttl: number) {
+    this.TTL = ttl
   }
 
   abstract init(): Promise<void>

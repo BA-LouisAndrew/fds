@@ -17,7 +17,7 @@ export class ValidationService {
       }
     }
 
-    const { validationId, additionalInfo } = await new ValidationEngine<Customer>().validateRuleset(ruleset, customer)
+    const { validationId, additionalInfo } = await new ValidationEngine<Customer>().scheduleRulesetValidation(ruleset, customer)
     return {
       data: {
         validationId,
