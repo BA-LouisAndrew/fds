@@ -1,6 +1,8 @@
 export abstract class DataStore {
   private static instance: DataStore
   static TTL = 3_600
+  static VALIDATION_PREFIX = "validation:"
+  static RULE_PREFIX = "rule:"
 
   static getInstance() {
     return this.instance
@@ -15,11 +17,11 @@ export abstract class DataStore {
   }
 
   static getValidationKey(validationId: string) {
-    return `validation:${validationId}`
+    return `${this.VALIDATION_PREFIX}${validationId}`
   }
 
   static getRuleKey(ruleName: string) {
-    return `rule:${ruleName}`
+    return `${this.RULE_PREFIX}${ruleName}`
   }
 
   abstract init(): Promise<void>
@@ -27,5 +29,6 @@ export abstract class DataStore {
   abstract get(id: string): Promise<string>
   abstract set(id: string, data: string): Promise<void>
   abstract delete(id: string): Promise<void>
+  abstract list(prefix: string): Promise<string[]>
   abstract print(): Promise<string>
 }

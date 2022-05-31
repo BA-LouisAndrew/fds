@@ -42,4 +42,8 @@ export class InMemoryStore extends DataStore {
   async print(): Promise<string> {
     return JSON.stringify([...this.map.entries()].map(([key, value]) => [key, JSON.parse(value)]))
   }
+
+  list(prefix: string): Promise<string[]> {
+    throw new Error("Method not implemented.")
+  }
 }
