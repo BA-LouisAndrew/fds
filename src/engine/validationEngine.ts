@@ -138,6 +138,8 @@ export class ValidationEngine<T> {
     }
 
     this.fraudScores.push(pass ? 0 : rule.failScore)
+    this.validation.runnedChecks++
+
     await this.pushToDatastore()
   }
 
