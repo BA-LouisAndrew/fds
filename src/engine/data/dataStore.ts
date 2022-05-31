@@ -14,6 +14,14 @@ export abstract class DataStore {
     this.TTL = ttl
   }
 
+  static getValidationKey(validationId: string) {
+    return `validation:${validationId}`
+  }
+
+  static getRuleKey(ruleName: string) {
+    return `rule:${ruleName}`
+  }
+
   abstract init(): Promise<void>
 
   abstract get(id: string): Promise<string>
