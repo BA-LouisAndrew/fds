@@ -5,7 +5,7 @@ import { ValidationEngine } from "@/engine/validationEngine"
 import { EventBus } from "@/eventBus"
 import { ApiResponse } from "@/types/api"
 import { Customer } from "@/types/customer"
-import { Validation } from "@/types/validation"
+import { MinifiedValidation, Validation } from "@/types/validation"
 
 import { RulesService } from "../rules/rulesService"
 
@@ -70,28 +70,79 @@ export class ValidationService {
     responseObject.on("close", closeConnection)
   }
 
-  static async getValidationProgress(validationId: string): Promise<ApiResponse<Validation>> {
-    const validation = await DataStore.getInstance().get(validationId)
-    const errorObject = {
-      data: null,
-      error: {
-        message: `Validation \`${validationId}\` not found`,
-        details: "The validation either doesn't exist, or is deleted from the cache",
-      },
-    }
-
-    if (!validation) {
-      return errorObject
-    }
-
+  static async getValidationProgress(validationId: string): Promise<ApiResponse<MinifiedValidation | Validation>> {
     try {
-      const result = JSON.parse(validation)
+      const stringifiedValue = await DataStore.getInstance().get(validationId)
+      const errorObject = {
+        data: null,
+        error: {
+          message: `Validation \`${validationId}\` not found`,
+          details: "The validation either doesn't exist, or is deleted from the cache",
+        },
+      }
+
+      if (!stringifiedValue) {
+        return errorObject
+      }
+
+      const value = this.parseStringifiedValidation(stringifiedValue)
+      if (!value) {
+        return errorObject
+      }
+
       return {
-        data: result as Validation,
+        error: null,
+        data: value,
+      }
+    } catch (e) {
+      return {
+        data: null,
+        error: {
+          message: e,
+        },
+      }
+    }
+  }
+
+  static async getValidationList(): Promise<ApiResponse<MinifiedValidation[]>> {
+    try {
+      const validationStrings = await DataStore.getInstance().list(DataStore.VALIDATION_PREFIX)
+
+      const validationList = validationStrings
+        .map((stringifiedValue) => this.parseStringifiedValidation(stringifiedValue, true))
+        .filter(Boolean) as MinifiedValidation[]
+
+      return {
+        data: validationList,
         error: null,
       }
+    } catch (e) {
+      return {
+        data: null,
+        error: {
+          message: e,
+        },
+      }
+    }
+  }
+
+  static parseStringifiedValidation(stringifiedValue: string, minify = false): Validation | MinifiedValidation | null {
+    try {
+      const parsedValue: Validation = JSON.parse(stringifiedValue)
+      if (!minify) {
+        return parsedValue
+      }
+
+      const { validationId, totalChecks, runnedChecks, fraudScore, skippedChecks } = parsedValue
+      return {
+        validationId,
+        totalChecks,
+        runnedChecks,
+        fraudScore,
+        skippedChecks,
+      }
     } catch {
-      return errorObject
+      return null
     }
   }
 }

@@ -59,4 +59,8 @@ export class RedisStore extends DataStore {
 
     return (await this.client.mGet(keys)).filter(Boolean) as string[]
   }
+
+  async flush(): Promise<void> {
+    await this.client.flushAll()
+  }
 }

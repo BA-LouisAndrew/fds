@@ -9,7 +9,7 @@ import { Config } from "./types/config"
 const port = process.env.PORT || 8000
 const CONFIG: Config = {
   enableCache: true,
-  dataStore: "redis",
+  dataStore: "in-memory",
 }
 
 ;(async () => {

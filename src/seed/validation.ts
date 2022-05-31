@@ -34,3 +34,11 @@ export const sampleValidation: Validation = {
   },
   events: [],
 }
+
+export const minifiedValidation = {
+  validationId: "52907745-7672-470e-a803-a2f8feb52944",
+  skippedChecks: ["skipped-check-1", "skipped-check-2"],
+  totalChecks: 6,
+  runnedChecks: 2,
+  fraudScore: 0.3,
+}

@@ -31,4 +31,5 @@ export abstract class DataStore {
   abstract delete(id: string): Promise<void>
   abstract list(prefix: string): Promise<string[]>
   abstract print(): Promise<string>
+  abstract flush(): Promise<void>
 }

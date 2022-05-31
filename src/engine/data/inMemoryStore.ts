@@ -32,6 +32,11 @@ export class InMemoryStore extends DataStore {
 
   async set(id: string, data: string): Promise<void> {
     await this.validateKeys()
+
+    if (!this.keys.includes(id)) {
+      this.keys.push(id)
+    }
+
     this.map.set(id, data)
   }
 
@@ -43,7 +48,13 @@ export class InMemoryStore extends DataStore {
     return JSON.stringify([...this.map.entries()].map(([key, value]) => [key, JSON.parse(value)]))
   }
 
-  list(prefix: string): Promise<string[]> {
-    throw new Error("Method not implemented.")
+  async list(prefix: string): Promise<string[]> {
+    const keys = this.keys.filter((key) => key.startsWith(prefix))
+
+    return keys.map((key) => this.map.get(key)).filter(Boolean) as string[]
+  }
+
+  async flush(): Promise<void> {
+    this.map.clear()
   }
 }

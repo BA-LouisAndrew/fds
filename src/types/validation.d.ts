@@ -102,3 +102,8 @@ export type ValidationAdditionalInfo<T> = {
    */
   customerInformation?: T
 }
+
+export type MinifiedValidation = Pick<
+  Validation,
+  "validationId" | "totalChecks" | "runnedChecks" | "fraudScore" | "skippedChecks"
+>
