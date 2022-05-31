@@ -70,9 +70,12 @@ export class ValidationService {
     responseObject.on("close", closeConnection)
   }
 
-  static async getValidationProgress(validationId: string): Promise<ApiResponse<MinifiedValidation | Validation>> {
+  static async getValidationProgress(
+    validationId: string,
+    minify = false,
+  ): Promise<ApiResponse<MinifiedValidation | Validation>> {
     try {
-      const stringifiedValue = await DataStore.getInstance().get(validationId)
+      const stringifiedValue = await DataStore.getInstance().get(DataStore.getValidationKey(validationId))
       const errorObject = {
         data: null,
         error: {
@@ -85,7 +88,7 @@ export class ValidationService {
         return errorObject
       }
 
-      const value = this.parseStringifiedValidation(stringifiedValue)
+      const value = this.parseStringifiedValidation(stringifiedValue, minify)
       if (!value) {
         return errorObject
       }

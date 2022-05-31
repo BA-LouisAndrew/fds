@@ -54,7 +54,7 @@ describe("Validation service class", () => {
 
   it("sends an event to the response if a validation event is done", async () => {
     const responseObject = mockDeep<Response>()
-    await DataStore.getInstance().set(validationId, "{}")
+    await DataStore.getInstance().set(DataStore.getValidationKey(validationId), "{}")
 
     await ValidationService.subscribeToValidationProgress(validationId, responseObject)
     expect(responseObject.write).toBeCalledWith("data: {}\n\n")
