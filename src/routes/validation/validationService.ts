@@ -40,6 +40,10 @@ export class ValidationService {
 
     const currentProgress = await ValidationService.getValidationProgress(validationId)
 
+    EventBus.once(closeEvent, () => {
+      writeToStream({ close: true })
+    })
+
     EventBus.on(updateEvent, (validationResult: Validation) => {
       writeToStream(validationResult)
     })
@@ -63,10 +67,6 @@ export class ValidationService {
 
     writeToStream(currentProgress.data)
 
-    EventBus.once(closeEvent, () => {
-      writeToStream({ close: true })
-    })
-
     responseObject.on("close", closeConnection)
   }
 
@@ -79,8 +79,6 @@ export class ValidationService {
         details: "The validation either doesn't exist, or is deleted from the cache",
       },
     }
-
-    console.log(validation)
 
     if (!validation) {
       return errorObject
