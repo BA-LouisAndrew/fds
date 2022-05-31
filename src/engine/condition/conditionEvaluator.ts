@@ -1,7 +1,7 @@
 import { OperatorFactory } from "@/engine/operators/operatorFactory"
 import { Condition } from "@/types/rule"
 
-import {  Evaluator } from "./evaluator"
+import { Evaluator } from "./evaluator"
 
 export class ConditionEvaluator extends Evaluator<Condition> {
   runEvaluation(data: any): void {
@@ -11,7 +11,7 @@ export class ConditionEvaluator extends Evaluator<Condition> {
       this.result.pass = false
       return
     }
-    
+
     const operator = OperatorFactory.getOperator(type, operatorId)
     const isValid = operator.operate(value, dataFromPath)
 
@@ -20,7 +20,7 @@ export class ConditionEvaluator extends Evaluator<Condition> {
       this.result.pass = false
       return
     }
-    
+
     this.result.pass = true
   }
 }

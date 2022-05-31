@@ -26,7 +26,7 @@ export const sampleRuleWithBoolCondition: ValidationRule = {
         operator: "eq",
         value: 200,
         failMessage: "Status code doesn't equal to 200",
-        type: "number"
+        type: "number",
       },
       {
         path: "$.body.success",

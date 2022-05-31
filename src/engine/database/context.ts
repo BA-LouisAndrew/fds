@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import { DeepMockProxy, mockDeep } from "vitest-mock-extended"
 
 export type Context = {
- prisma: PrismaClient
+  prisma: PrismaClient
 }
 
 export type MockContext = {
@@ -11,7 +11,7 @@ export type MockContext = {
 
 export const createContext = (): Context => {
   return {
-    prisma: new PrismaClient()
+    prisma: new PrismaClient(),
   }
 }
 

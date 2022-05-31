@@ -8,8 +8,8 @@ export const sampleCustomer: Customer = {
     postalCode: 10367,
     city: "Berlin",
     state: "Berlin",
-    country: "Germany"
+    country: "Germany",
   },
   email: "winnie-the-pooh@mmmmail.com",
-  phoneNumber: "01788888812"
+  phoneNumber: "01788888812",
 }

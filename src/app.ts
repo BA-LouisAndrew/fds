@@ -34,12 +34,7 @@ app.use((_req, res: Response) => {
   })
 })
 
-app.use((
-  err: unknown,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Response | void => {
+app.use((err: unknown, req: Request, res: Response, next: NextFunction): Response | void => {
   // Error handler
   if (err instanceof ValidateError) {
     return res.status(422).json({

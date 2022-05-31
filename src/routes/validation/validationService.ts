@@ -9,7 +9,7 @@ import { Validation } from "@/types/validation"
 
 import { RulesService } from "../rules/rulesService"
 
-export type ValidationSchedule = Pick<Validation, "validationId" | "additionalInfo">;
+export type ValidationSchedule = Pick<Validation, "validationId" | "additionalInfo">
 
 export class ValidationService {
   static async scheduleRulesetValidation(customer: Customer): Promise<ApiResponse<ValidationSchedule>> {
@@ -37,26 +37,26 @@ export class ValidationService {
   static async subscribeToValidationProgress(validationId: string, responseObject: ExResponse): Promise<void> {
     const updateEvent = `${EventBus.EVENTS.VALIDATION_EVENT_UPDATE}--${validationId}`
     const closeEvent = `${EventBus.EVENTS.VALIDATION_DONE}--${validationId}`
-    
+
     const currentProgress = await ValidationService.getValidationProgress(validationId)
-    console.log(currentProgress)	
-    
+
     EventBus.on(updateEvent, (validationResult: Validation) => {
       writeToStream(validationResult)
     })
 
     const closeConnection = () => {
-      console.log("closing connection")	
+      console.log("closing connection")
       EventBus.off(updateEvent)
       responseObject.end()
     }
 
-    const writeToStream = (data: any) => {
-      responseObject.write(`data: ${JSON.stringify(data)}\n\n`)
-    }
+    const writeToStream = (data: any) => responseObject.write(`data: ${JSON.stringify(data)}\n\n`)
 
     if (currentProgress.error) {
-      writeToStream(currentProgress.error)
+      writeToStream({
+        ...currentProgress.error,
+        error: true,
+      })
       closeConnection()
       return
     }
@@ -79,8 +79,8 @@ export class ValidationService {
         details: "The validation either doesn't exist, or is deleted from the cache",
       },
     }
-    
-    console.log(validation)	
+
+    console.log(validation)
 
     if (!validation) {
       return errorObject

@@ -14,9 +14,9 @@ export class OperatorFactory {
     string: stringOperators,
     number: numberOperators,
     array: arrayOperators,
-    boolean: booleanOperators
+    boolean: booleanOperators,
   }
- 
+
   static getOperator(type: ConditionType, operatorId: OperatorType): Operator {
     const operatorGroup = this.operatorMap[type]
     if (!operatorGroup) {
@@ -27,7 +27,7 @@ export class OperatorFactory {
     if (!operator) {
       return this.nullishOperator
     }
-    
+
     return operator as Operator
   }
 }

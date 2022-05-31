@@ -1,10 +1,10 @@
 export interface ValidationErrorJSON {
-  message: "Validation Failed";
-  details: { [name: string]: unknown };
+  message: "Validation Failed"
+  details: { [name: string]: unknown }
 }
 
 export interface NotFound {
-  message: string;
+  message: string
 }
 
 export interface WentWrong {

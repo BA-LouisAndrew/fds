@@ -7,5 +7,5 @@ export class BooleanOperator extends Operator<boolean, BooleanOperatorIds> {
 }
 
 export const booleanOperators: Record<BooleanOperatorIds, BooleanOperator> = {
-  eq: new BooleanOperator("eq", (a, b) => b === a)
+  eq: new BooleanOperator("eq", (a, b) => b === a),
 }

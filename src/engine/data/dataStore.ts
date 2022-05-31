@@ -1,4 +1,3 @@
-
 export abstract class DataStore {
   private static instance: DataStore
   static TTL = 3_600
@@ -10,7 +9,7 @@ export abstract class DataStore {
   protected static setInstance(store: DataStore) {
     DataStore.instance = store
   }
-  
+
   public static setTTL(ttl: number) {
     this.TTL = ttl
   }

@@ -6,25 +6,25 @@ export interface Validation<T = Customer> {
    * @pattern [0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}
    * @example "52907745-7672-470e-a803-a2f8feb52944"
    */
-  validationId: string;
+  validationId: string
   /**
    * Current fraud score.
    * @isFloat
    * @minimum 0
    * @maximum 1
    */
-  fraudScore: number;
+  fraudScore: number
   /**
    * Total number of rule checks ro be runned.
    * @isInt
    */
-  totalChecks: number;
+  totalChecks: number
   /**
    * Number of checks runned.
    * @isInt
    * @minimum 0
    */
-  runnedChecks: number;
+  runnedChecks: number
   /**
    * Details of rule check that's currently running.
    */
@@ -32,73 +32,73 @@ export interface Validation<T = Customer> {
     /**
      * The number of the currently running check in the order.
      */
-    number: number;
+    number: number
     /**
      * Unique identifier of the validation rule.
      */
-    name: string;
-  };
+    name: string
+  }
   /**
    * Checks that passed.
    */
-  passedChecks: ValidationEventResult[];
+  passedChecks: ValidationEventResult[]
   /**
    * Checks that failed.
    */
-  failedChecks: ValidationEventResult[];
+  failedChecks: ValidationEventResult[]
   /**
    * Name of the rules that skipped the check process.
    */
-  skippedChecks: string[];
+  skippedChecks: string[]
   /**
    * Additional information on the validation process.
    */
-  additionalInfo: ValidationAdditionalInfo<T>;
+  additionalInfo: ValidationAdditionalInfo<T>
   /**
    * A collection of validation events. Containing validation details on passed, check and not started validations.
    */
   events: ValidationEvent[]
 }
 
-export type ValidationEventResult = Omit<ValidationEvent, "status">;
+export type ValidationEventResult = Omit<ValidationEvent, "status">
 
-export type ValidationEventStatus = "NOT_STARTED" | "FAILED" | "PASSED" | "RUNNING";
+export type ValidationEventStatus = "NOT_STARTED" | "FAILED" | "PASSED" | "RUNNING"
 
 export type ValidationEvent = {
   /**
    * Name of the rule.
    */
-  name: string;
+  name: string
   /**
    * Status of the validation event.
    * @example "NOT_STARTED"
    */
-  status: ValidationEventStatus;
+  status: ValidationEventStatus
   /**
    * ISO stringified date of when the validation event started.
    */
-  dateStarted: string | null;
+  dateStarted: string | null
   /**
    * ISO stringified date of when the validation event ended.
    */
-  dateEnded: string | null;
+  dateEnded: string | null
   /**
    * Mesages that give informations on the validation event.
    */
-  messages?: string[];
-};
+  messages?: string[]
+}
 
 export type ValidationAdditionalInfo<T> = {
   /**
    * Date time information on when the validation started.
    */
-  startDate: string;
+  startDate: string
   /**
    * Date time information on when the validation ended.
    */
-  endDate?: string;
+  endDate?: string
   /**
    * Additional information regarding the validation customer.
    */
-  customerInformation?: T;
-};
+  customerInformation?: T
+}

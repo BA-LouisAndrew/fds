@@ -12,18 +12,18 @@ describe("Rules Service class", () => {
     mockContext = createMockContext()
     await new Database(mockContext).init()
   })
-  
+
   it("should retrieve details of a rule if a rule name is provided", async () => {
     mockContext.prisma.validationRule.findFirst.mockResolvedValue(prismaValidationRule)
     const result = await RulesService.getRule(sampleRule.name)
     expect(mockContext.prisma.validationRule.findFirst).toBeCalledWith({
       where: {
-        name: sampleRule.name
-      }
+        name: sampleRule.name,
+      },
     })
     expect(result).toEqual({ data: { id: "", ...sampleRule }, error: null })
   })
-  
+
   it("should return an error if the rule that is trying to be accessed doesn't exist", async () => {
     mockContext.prisma.validationRule.findFirst.mockResolvedValue(null)
     const result = await RulesService.getRule(sampleRule.name)
@@ -81,17 +81,17 @@ describe("Rules Service class", () => {
     expect(result.data).toBe(null)
     expect(result.error).toBeTruthy()
   })
-  
-  it("should delete a rule if it exists",async () => {
+
+  it("should delete a rule if it exists", async () => {
     mockContext.prisma.validationRule.delete.mockResolvedValue(prismaValidationRule)
     const result = await RulesService.deleteRule(sampleRule.name)
 
     expect(mockContext.prisma.validationRule.delete).toBeCalledWith({
       where: {
-        name: sampleRule.name
-      }
+        name: sampleRule.name,
+      },
     })
-    
+
     expect(result).toEqual({ data: { success: true }, error: null })
   })
 })
