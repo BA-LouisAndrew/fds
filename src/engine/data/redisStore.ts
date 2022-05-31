@@ -51,6 +51,16 @@ export class RedisStore extends DataStore {
   }
 
   async print(): Promise<string> {
-    throw new Error("Not implemented!")
+    return ""
+  }
+
+  async list(prefix: string): Promise<string[]> {
+    const keys = await this.client.keys(prefix + "*")
+
+    return (await this.client.mGet(keys)).filter(Boolean) as string[]
+  }
+
+  async flush(): Promise<void> {
+    await this.client.flushAll()
   }
 }

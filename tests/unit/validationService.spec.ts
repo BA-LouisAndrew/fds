@@ -10,7 +10,7 @@ import { EventBus } from "@/eventBus"
 import { ValidationService } from "@/routes/validation/validationService"
 import { sampleCustomer } from "@/seed/customer"
 import { prismaValidationRule } from "@/seed/rule"
-import { sampleValidation } from "@/seed/validation"
+import { minifiedValidation, sampleValidation } from "@/seed/validation"
 
 const scheduleRulesetValidation = vi.fn()
 function ValidationEngine() {
@@ -71,5 +71,22 @@ describe("Validation service class", () => {
 
     EventBus.emit(`${EventBus.EVENTS.VALIDATION_DONE}--${validationId}`)
     expect(responseObject.write).lastCalledWith(`data: ${JSON.stringify({ close: true })}\n\n`)
+  })
+
+  it("retrieves a list of validations", async () => {
+    await DataStore.getInstance().flush()
+    await DataStore.getInstance().set(DataStore.VALIDATION_PREFIX + "test", JSON.stringify(sampleValidation))
+    await DataStore.getInstance().set(DataStore.VALIDATION_PREFIX + "test-b", JSON.stringify(sampleValidation))
+
+    const validationList = await ValidationService.getValidationList()
+
+    expect(validationList.data).toEqual([minifiedValidation, minifiedValidation])
+  })
+
+  it("returns an empty array if no validation is available", async () => {
+    await DataStore.getInstance().flush()
+
+    const validationList = await ValidationService.getValidationList()
+    expect(validationList.data).toEqual([])
   })
 })

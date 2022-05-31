@@ -34,7 +34,7 @@ export class Database {
       return
     }
 
-    await this.cache.set(rule.name, JSON.stringify(rule))
+    await this.cache.set(DataStore.getRuleKey(rule.name), JSON.stringify(rule))
   }
 
   static async getCachedValidationRule(ruleName: string): Promise<ValidationRule | null> {
@@ -42,7 +42,7 @@ export class Database {
       return null
     }
 
-    const value = await this.cache.get(ruleName)
+    const value = await this.cache.get(DataStore.getRuleKey(ruleName))
     if (!value) {
       return null
     }

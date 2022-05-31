@@ -4,10 +4,10 @@ import { Body, Controller, Example, Get, Path, Post, Response, Route, SuccessRes
 
 import { ValidationEngine } from "@/engine/validationEngine"
 import { sampleCustomer } from "@/seed/customer"
-import { sampleValidation } from "@/seed/validation"
+import { minifiedValidation, sampleValidation } from "@/seed/validation"
 import { Customer } from "@/types/customer"
 import { NotFound, ValidationErrorJSON, WentWrong } from "@/types/responses"
-import { Validation } from "@/types/validation"
+import { MinifiedValidation, Validation } from "@/types/validation"
 
 import { RulesService } from "../rules/rulesService"
 import { ValidationSchedule, ValidationService } from "./validationService"
@@ -31,6 +31,21 @@ export class ValidationController extends Controller {
       return {
         message: error.message,
         details: error.details || "",
+      }
+    }
+
+    return data
+  }
+
+  @Example<MinifiedValidation[]>([minifiedValidation])
+  @Response<WentWrong>(500, "Internal Server Error")
+  @Get("/list")
+  public async listValidations(): Promise<MinifiedValidation[] | WentWrong> {
+    const { data, error } = await ValidationService.getValidationList()
+    if (error) {
+      return {
+        details: error.details || "",
+        message: error.message,
       }
     }
 
