@@ -2,7 +2,7 @@ import jp from "jsonpath"
 
 import { BooleanCondition, Condition } from "@/types/rule"
 
-export type EvaluationResult = { messages: string[]; pass: boolean };
+export type EvaluationResult = { messages: string[]; pass: boolean }
 const conditionKeys = ["path", "operator", "type", "value", "failMessage"]
 
 export class Evaluator<T extends Condition | BooleanCondition> {

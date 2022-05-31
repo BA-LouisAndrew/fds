@@ -5,7 +5,7 @@ import { resolvePrismaType } from "@/engine/database/resolver"
 import { ApiErrorResponse, ApiResponse, ServiceValidationReturnType } from "@/types/api"
 import { BooleanCondition, Condition, RetryStrategy, ValidationRule } from "@/types/rule"
 
-export type UpdateRuleRequestBody = Partial<Omit<ValidationRule, "name">>;
+export type UpdateRuleRequestBody = Partial<Omit<ValidationRule, "name">>
 
 export class RulesService {
   static async listRules(): Promise<ApiResponse<ValidationRule[]>> {
@@ -174,27 +174,27 @@ export class RulesService {
       }
 
       switch (e.code) {
-      case "P2002":
-        return {
-          error: {
-            message: `Rule with name '${payload?.name}' already exists!`,
-          },
-          data: null,
-        }
-      case "P2025":
-        return {
-          error: {
-            message: `Rule with name '${payload?.name}' doesn't exist`,
-          },
-          data: null,
-        }
-      default:
-        return {
-          error: {
-            message: e.message,
-          },
-          data: null,
-        }
+        case "P2002":
+          return {
+            error: {
+              message: `Rule with name '${payload?.name}' already exists!`,
+            },
+            data: null,
+          }
+        case "P2025":
+          return {
+            error: {
+              message: `Rule with name '${payload?.name}' doesn't exist`,
+            },
+            data: null,
+          }
+        default:
+          return {
+            error: {
+              message: e.message,
+            },
+            data: null,
+          }
       }
     }
 

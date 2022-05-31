@@ -1,16 +1,16 @@
 export type ApiErrorResponse = {
   error: {
-    message: string;
+    message: string
     details?: string
-  };
-  data: null;
-};
+  }
+  data: null
+}
 
 export type ApiSuccessResponse<T> = {
-  data: T;
-  error: null;
-};
+  data: T
+  error: null
+}
 
-export type ApiResponse<T> = ApiErrorResponse | ApiSuccessResponse<T>;
+export type ApiResponse<T> = ApiErrorResponse | ApiSuccessResponse<T>
 
 export type ServiceValidationReturnType = { isValid: boolean; message: string }

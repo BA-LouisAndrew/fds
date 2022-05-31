@@ -33,12 +33,12 @@ export class BooleanConditionEvaluator extends Evaluator<BooleanCondition> {
 
     const conditions = this.condition[this.booleanIdentifier]!
     const conditionsResults = conditions.map((condition) => new ConditionEvaluator(condition).evaluate(data))
-    
+
     this.result.pass =
       this.booleanIdentifier === "all"
         ? conditionsResults.every(({ pass }) => pass)
         : conditionsResults.some(({ pass }) => pass)
-    
+
     this.result.messages = this.mergeMessages(conditionsResults)
   }
 

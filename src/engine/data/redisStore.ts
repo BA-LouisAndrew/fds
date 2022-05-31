@@ -12,8 +12,8 @@ const createRedisConfig = () => {
     url: process.env.REDIS,
     socket: {
       tls: true,
-      rejectUnauthorized: false
-    }
+      rejectUnauthorized: false,
+    },
   }
 }
 
@@ -24,19 +24,18 @@ export class RedisStore extends DataStore {
     super()
     this.client = createClient(createRedisConfig())
   }
-  
+
   async init() {
     await this.client.connect()
     DataStore.setInstance(this)
-    
+
     if (process.env.NODE_ENV !== "test") {
       console.log("> Redis instance connected.")
     }
   }
 
-
   async get(id: string): Promise<string> {
-    const value = await this.client.get(id) 
+    const value = await this.client.get(id)
     if (!value) {
       return ""
     }
@@ -50,7 +49,7 @@ export class RedisStore extends DataStore {
   async delete(id: string): Promise<void> {
     await this.client.del(id)
   }
-  
+
   async print(): Promise<string> {
     throw new Error("Not implemented!")
   }

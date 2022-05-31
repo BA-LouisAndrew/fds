@@ -3,9 +3,9 @@ import { Body, Controller, Get, Post, Query, Route, Tags } from "tsoa"
 import { UtilityService } from "./utilsService"
 
 type NameValidationReturnType = {
-  success: boolean;
-  valid: string;
-};
+  success: boolean
+  valid: string
+}
 
 /**
  * Utility endpoints for testing purposes.

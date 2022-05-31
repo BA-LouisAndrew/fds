@@ -18,9 +18,9 @@ export class UtilityService {
   static printCache() {
     return DataStore.getInstance().print()
   }
-  
+
   static alwaysTrue(timeout?: number): Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(true)
       }, timeout ?? TIMEOUT)

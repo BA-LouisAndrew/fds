@@ -36,17 +36,17 @@ export class Database {
 
     await this.cache.set(rule.name, JSON.stringify(rule))
   }
-  
+
   static async getCachedValidationRule(ruleName: string): Promise<ValidationRule | null> {
     if (!this.cache) {
       return null
     }
-    
+
     const value = await this.cache.get(ruleName)
     if (!value) {
       return null
     }
-    
+
     try {
       const parsedValue = JSON.parse(value)
       return parsedValue

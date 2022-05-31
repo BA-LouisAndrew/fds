@@ -8,7 +8,7 @@ import { Context } from "./context"
 
 type FireRequestReturnType = ApiResponse<
   Pick<GotResponse, "statusCode" | "statusMessage" | "rawBody" | "retryCount"> & { body: any }
->;
+>
 
 export class Agent {
   private static context: Context

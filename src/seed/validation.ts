@@ -16,7 +16,7 @@ export const sampleValidation: Validation = {
     {
       name: "passed-check-1",
       dateEnded: null,
-      dateStarted: null
+      dateStarted: null,
     },
   ],
   failedChecks: [
@@ -32,5 +32,5 @@ export const sampleValidation: Validation = {
     startDate: new Date("09-10-2000").toISOString(),
     customerInformation: sampleCustomer,
   },
-  events: []
+  events: [],
 }

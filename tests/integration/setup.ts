@@ -1,4 +1,4 @@
-import { app } from"@/app"
+import { app } from "@/app"
 import { initStore } from "@/engine/data/initStore"
 import { createMockContext } from "@/engine/database/context"
 import { Database } from "@/engine/database/database"

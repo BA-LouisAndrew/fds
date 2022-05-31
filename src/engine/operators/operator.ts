@@ -1,14 +1,11 @@
-type OperateFunction<T, V = T> = (value: T, receivedValue: V) => boolean;
+type OperateFunction<T, V = T> = (value: T, receivedValue: V) => boolean
 
 export class Operator<ValueType = any, IdentifierType extends string = string, ReceivedValueType = ValueType> {
   private identifier: IdentifierType
   private operateFunction: OperateFunction<ValueType, ReceivedValueType>
   protected validateFunction: (value: any) => boolean
 
-  constructor(
-    identifier: IdentifierType,
-    operateFunction: OperateFunction<ValueType, ReceivedValueType>,
-  ) {
+  constructor(identifier: IdentifierType, operateFunction: OperateFunction<ValueType, ReceivedValueType>) {
     this.identifier = identifier
     this.operateFunction = operateFunction
   }
@@ -17,7 +14,7 @@ export class Operator<ValueType = any, IdentifierType extends string = string, R
   validate(value: any): boolean {
     return this.validateFunction(value)
   }
-  
+
   setValidateFunction(validateFunction: (value: any) => boolean) {
     this.validateFunction = validateFunction
     return this // Method chaining

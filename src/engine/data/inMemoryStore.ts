@@ -15,7 +15,7 @@ export class InMemoryStore extends DataStore {
       console.log("> In-memory store initiated")
     }
   }
-  
+
   async validateKeys() {
     if (this.keys.length === InMemoryStore.MAX_SIZE) {
       const firstKey = this.keys.shift()

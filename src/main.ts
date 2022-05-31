@@ -10,9 +10,9 @@ const port = process.env.PORT || 8000
 const CONFIG: Config = {
   enableCache: true,
   dataStore: "in-memory",
-};
+}
 
-(async () => {
+;(async () => {
   const store = initStore(CONFIG.dataStore) // In memory store
   const database = new Database(createDatabaseContext())
 

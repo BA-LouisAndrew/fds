@@ -1,5 +1,6 @@
 import { v4 } from "uuid"
 
+import { EventBus } from "@/eventBus"
 import { ValidationRule } from "@/types/rule"
 import { Validation, ValidationEventResult, ValidationEventStatus } from "@/types/validation"
 
@@ -8,9 +9,11 @@ import { EvaluatorFactory } from "./condition/evaluatorFactory"
 import { DataStore } from "./data/dataStore"
 import { Agent } from "./request/agent"
 
-type ValidationEnginePropertyType<T> = Omit<Validation<T>, "fraudScore" | "passedChecks" | "failedChecks">;
+type ValidationEnginePropertyType<T> = Omit<Validation<T>, "fraudScore" | "passedChecks" | "failedChecks">
 
 export class ValidationEngine<T> {
+  static ID = 0
+
   private validation: ValidationEnginePropertyType<T>
   private fraudScores: number[]
   private store = DataStore.getInstance()
@@ -56,8 +59,8 @@ export class ValidationEngine<T> {
       const evaluationResult = await this.evaluateRule(rule, data)
       await this.reviewEvaluationResult(evaluationResult, rule)
     }
-    
-    await this.afterValidation()	
+
+    await this.afterValidation()
 
     return this.validationResult
   }
@@ -137,20 +140,23 @@ export class ValidationEngine<T> {
     this.fraudScores.push(pass ? 0 : rule.failScore)
     await this.pushToDatastore()
   }
-  
+
   private async pushToDatastore() {
-    await this.store.set(this.validation.validationId, JSON.stringify(this.validation))
+    const { validationId } = this.validation
+    await this.store.set(validationId, JSON.stringify(this.validationResult))
+    EventBus.emit(`${EventBus.EVENTS.VALIDATION_EVENT_UPDATE}--${validationId}`, this.validationResult)
   }
 
   private async createValidationId(): Promise<Validation["validationId"]> {
-    const id = v4()
-    // TODO See if id exists on DB
+    ValidationEngine.ID++
+    const id = "validation-" + ValidationEngine.ID
+    // TODO See if id exists on DB and use `v4` to create UUID
     return id
   }
-  
+
   private async afterValidation() {
     this.validation.additionalInfo.endDate = new Date().toISOString()
-    
+
     console.log(this.validationResult)
   }
 }

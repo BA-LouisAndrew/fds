@@ -2,10 +2,10 @@ import got, { Got } from "got"
 import { mock, MockProxy } from "vitest-mock-extended"
 
 export type Context = {
-  client: Got;
-};
+  client: Got
+}
 
-export type MockContext = MockProxy<Context>;
+export type MockContext = MockProxy<Context>
 
 export const createContext = (): Context => {
   return {

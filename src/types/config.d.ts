@@ -1,4 +1,4 @@
 export interface Config {
-  enableCache: boolean;
-  dataStore: "redis" | "in-memory";
+  enableCache: boolean
+  dataStore: "redis" | "in-memory"
 }
