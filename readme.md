@@ -1,4 +1,5 @@
 ![Heroku](https://pyheroku-badge.herokuapp.com/?app=louisandrew-bachelorarbeit&style=square)
+[![Deploy and Release](https://github.com/BA-LouisAndrew/fds/actions/workflows/release.yml/badge.svg)](https://github.com/BA-LouisAndrew/fds/actions/workflows/release.yml)
 
 # FDS
 
