@@ -11,5 +11,5 @@ export const initTestingServer = async () => {
   await store.init()
   await database.init()
 
-  return { app, mockContext }
+  return { app, mockContext, store }
 }

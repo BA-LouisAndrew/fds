@@ -4,7 +4,7 @@ import { Body, Controller, Example, Get, Path, Post, Response, Route, SuccessRes
 
 import { ValidationEngine } from "@/engine/validationEngine"
 import { sampleCustomer } from "@/seed/customer"
-import { minifiedValidation, sampleValidation } from "@/seed/validation"
+import { minifiedValidation, sampleValidation, validationSchedule } from "@/seed/validation"
 import { Customer } from "@/types/customer"
 import { NotFound, ValidationErrorJSON, WentWrong } from "@/types/responses"
 import { MinifiedValidation, Validation } from "@/types/validation"
@@ -19,7 +19,7 @@ export class ValidationController extends Controller {
    * Execute a new validation process for a specified customer entity.
    * @param requestBody Customer, on which the validation should be executed.
    */
-  @Example<Customer>(sampleCustomer)
+  @Example<ValidationSchedule>(validationSchedule)
   @SuccessResponse(201, "Validation started")
   @Response<ValidationErrorJSON>(422, "Validation Failed")
   @Response<WentWrong>(400, "Bad Request")
