@@ -158,7 +158,8 @@ export class ValidationEngine<T> {
 
   private async afterValidation() {
     this.validation.additionalInfo.endDate = new Date().toISOString()
+    EventBus.emit(`${EventBus.EVENTS.VALIDATION_DONE}--${this.validation.validationId}`)
 
-    console.log(this.validationResult)
+    // console.log(this.validationResult)
   }
 }

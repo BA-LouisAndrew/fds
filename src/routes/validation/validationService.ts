@@ -41,7 +41,7 @@ export class ValidationService {
     const currentProgress = await ValidationService.getValidationProgress(validationId)
 
     EventBus.once(closeEvent, () => {
-      writeToStream({ close: true })
+      closeConnection()
     })
 
     EventBus.on(updateEvent, (validationResult: Validation) => {
@@ -49,8 +49,9 @@ export class ValidationService {
     })
 
     const closeConnection = () => {
-      console.log("closing connection")
+      writeToStream({ close: true })
       EventBus.off(updateEvent)
+      EventBus.off(closeEvent)
       responseObject.end()
     }
 
@@ -67,7 +68,9 @@ export class ValidationService {
 
     writeToStream(currentProgress.data)
 
-    responseObject.on("close", closeConnection)
+    responseObject.on("close", () => {
+      closeConnection()
+    })
   }
 
   static async getValidationProgress(
