@@ -3,7 +3,6 @@ import { Request as ExRequest, Response as ExResponse } from "express"
 import { Body, Controller, Example, Get, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa"
 
 import { ValidationEngine } from "@/engine/validationEngine"
-import { sampleCustomer } from "@/seed/customer"
 import { minifiedValidation, sampleValidation, validationSchedule } from "@/seed/validation"
 import { Customer } from "@/types/customer"
 import { NotFound, ValidationErrorJSON, WentWrong } from "@/types/responses"
