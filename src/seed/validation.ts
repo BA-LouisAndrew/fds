@@ -42,3 +42,11 @@ export const minifiedValidation = {
   runnedChecks: 2,
   fraudScore: 0.3,
 }
+
+export const validationSchedule = {
+  validationId: "52907745-7672-470e-a803-a2f8feb52944",
+  additionalInfo: {
+    startDate: new Date("09-10-2000").toISOString(),
+    customerInformation: sampleCustomer,
+  },
+}
