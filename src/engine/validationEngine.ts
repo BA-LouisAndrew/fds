@@ -7,6 +7,7 @@ import { Validation, ValidationEventResult, ValidationEventStatus } from "@/type
 import { EvaluationResult } from "./condition/evaluator"
 import { EvaluatorFactory } from "./condition/evaluatorFactory"
 import { DataStore } from "./data/dataStore"
+import { Notification } from "./notification"
 import { Agent } from "./request/agent"
 
 type ValidationEnginePropertyType<T> = Omit<Validation<T>, "fraudScore" | "passedChecks" | "failedChecks">
@@ -158,8 +159,9 @@ export class ValidationEngine<T> {
 
   private async afterValidation() {
     this.validation.additionalInfo.endDate = new Date().toISOString()
-    EventBus.emit(`${EventBus.EVENTS.VALIDATION_DONE}--${this.validation.validationId}`)
 
+    EventBus.emit(`${EventBus.EVENTS.VALIDATION_DONE}--${this.validation.validationId}`)
+    Notification.publish(JSON.stringify(this.validationResult))
     // console.log(this.validationResult)
   }
 }
