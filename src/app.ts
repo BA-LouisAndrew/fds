@@ -24,6 +24,9 @@ app.use("/docs", swaggerUi.serve, async (_req: Request, res: Response) => {
 })
 
 app.get("/api/v1/validate/:validationId/subscribe", subscribeToValidationProgress)
+app.get("/config", (_, response: Response) => {
+  response.send(app.get("config"))
+})
 
 RegisterRoutes(app)
 

@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@prisma/client": "3.14.0",
+    "amqplib": "0.10.0",
     "body-parser": "1.20.0",
     "cors": "2.8.5",
     "eslint-config-airbnb-base": "15.0.0",
@@ -19,6 +20,7 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "@types/amqplib": "0.8.2",
     "@types/body-parser": "1.19.2",
     "@types/express": "4.17.13",
     "@types/jsonpath": "0.2.0",
@@ -54,9 +56,13 @@
     "tsoa": "tsoa spec-and-routes",
     "start": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "serve": "node ./dist/src/main.js",
-    "setup:redis": "docker run -p 6379:6379 --name redis-redisjson redislabs/rejson:latest",
-    "start:redis": "docker start redis-redisjson",
-    "stop:redis": "docker stop redis-redisjson",
+    "setup:redis": "docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest",
+    "start-brew:redis": "brew services start redis",
+    "stop-brew:redis": "brew services stop redis",
+    "start:rabbit": "docker run -d -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.10-management",
+    "stop:rabbit": "docker stop rabbitmq",
+    "start-brew:rabbit": "brew services start rabbitmq",
+    "stop-brew:rabbit": "brew services stop rabbitmq",
     "test": "vitest run --config vitest.config.ts",
     "test:watch": "vitest --config vitest.config.ts"
   },
