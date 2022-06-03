@@ -19,6 +19,7 @@ export interface ValidationRule {
    * @example { user: "$.firstName", city: "$.city" }
    */
   requestUrlParameter?: GenericObject
+  requestHeader?: GenericObject
   /**
    * Determine whether the specific validation rule should be skipped.
    */

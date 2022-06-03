@@ -26,4 +26,5 @@ model ValidationRule {
   retryStrategy       Json?
   requestUrlParameter Json?
   requestBody         Json?
+  requestHeader      Json?
 }
