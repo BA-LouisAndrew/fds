@@ -37,17 +37,28 @@ export class Evaluator<T extends Condition | BooleanCondition> {
     this.result = { messages: [], pass: false }
   }
 
-  protected accessDataFromPath(data: any, path: string): any | null {
-    const dataFromPath = jp.query(data, path)
-    if (dataFromPath.length === 0) {
-      this.result.messages.push(`Path ${path} is not reachable. Available paths: ${this.formatAccessiblePaths(data)}`)
-      if (data.body) {
-        this.result.messages.push(`Accessible paths on $.body: ${this.formatAccessiblePaths(data.body)}`)
-      }
-      return null
+  protected accessDataFromPath(data: any, path: any): any | null {
+    if (typeof path !== "string") {
+      return path
     }
 
-    return dataFromPath[0]
+    try {
+      const dataFromPath = jp.query(data, path)
+      if (dataFromPath.length === 0) {
+        this.result.messages.push(`Path ${path} is not reachable. Available paths: ${this.formatAccessiblePaths(data)}`)
+
+        if (data.body) {
+          this.result.messages.push(`Accessible paths on $.body: ${this.formatAccessiblePaths(data.body)}`)
+        }
+
+        return null
+      }
+
+      return dataFromPath[0]
+    } catch {
+      // No path
+      return path
+    }
   }
 
   private formatAccessiblePaths(data: any): string {

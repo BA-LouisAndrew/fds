@@ -24,7 +24,7 @@ export class BooleanConditionEvaluator extends Evaluator<BooleanCondition> {
     return BooleanConditionEvaluator.getBooleanIdentifier(this.condition)
   }
 
-  runEvaluation(data: any): void {
+  protected runEvaluation(data: any): void {
     if (this.booleanIdentifier === "null") {
       this.result.pass = false
       this.result.messages.push("Condition invalid! Please use either `any` or `all`")

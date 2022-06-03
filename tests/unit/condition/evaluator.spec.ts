@@ -53,6 +53,34 @@ describe("Evaluator", () => {
 
       expect(messages).toEqual(["Status code doesn't equal to 200. Received: 300"])
     })
+
+    it("returns the correct result if the value equals an access path to the customer object", () => {
+      const e = new ConditionEvaluator({
+        ...condition,
+        value: "$.result",
+      })
+
+      const { pass } = e.evaluate({
+        statusCode: 200,
+        result: 200,
+      })
+
+      expect(pass).toBeTruthy()
+    })
+
+    it("returns the correct result if the value equals an access path to the customer object but the evaluation failed", () => {
+      const e = new ConditionEvaluator({
+        ...condition,
+        value: "$.result",
+      })
+
+      const { pass } = e.evaluate({
+        statusCode: 200,
+        result: 300,
+      })
+
+      expect(pass).toBeFalsy()
+    })
   })
 
   describe("Boolean condition evaluator", () => {

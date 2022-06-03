@@ -11,11 +11,11 @@ describe("Validation engine: Validate single rule", () => {
     Agent.setClient(createContext())
     await initStore("in-memory").init()
   })
-  
+
   const rule: ValidationRule = {
     skip: false,
     condition: {
-      path: "$.statusCode",
+      path: "$.response.statusCode",
       operator: "eq",
       type: "number",
       value: 200,
@@ -56,14 +56,14 @@ describe("Validation engine: Validate single rule", () => {
         condition: {
           all: [
             {
-              path: "$.statusCode",
+              path: "$.response.statusCode",
               operator: "eq",
               type: "number",
               value: 200,
               failMessage: "Status code doesn't equal to 200",
             },
             {
-              path: "$.body.success",
+              path: "$.response.body.success",
               operator: "eq",
               type: "boolean",
               value: true,
@@ -89,14 +89,14 @@ describe("Validation engine: Validate single rule", () => {
         condition: {
           all: [
             {
-              path: "$.statusCode",
+              path: "$.response.statusCode",
               operator: "eq",
               type: "number",
               value: 200,
               failMessage: "Status code doesn't equal to 200",
             },
             {
-              path: "$.body.success",
+              path: "$.response.body.success",
               operator: "eq",
               type: "boolean",
               value: true,
@@ -115,4 +115,3 @@ describe("Validation engine: Validate single rule", () => {
     expect(result.failedChecks[0].messages).toContain("It fails!")
   })
 })
-

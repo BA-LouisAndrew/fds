@@ -80,9 +80,12 @@ describe("Agent", () => {
     }
     await Agent.fireRequest(rule, {})
 
-    expect(mockContext.client).not.toBeCalledWith(expect.anything(), expect.objectContaining({
-      json: expect.anything()
-    }))
+    expect(mockContext.client).not.toBeCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        json: expect.anything(),
+      }),
+    )
   })
 
   it.skip("passes the correct parameters to the URL")
