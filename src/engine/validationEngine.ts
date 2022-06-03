@@ -112,6 +112,7 @@ export class ValidationEngine<T> {
     if (validationEvent) {
       validationEvent.dateStarted = new Date().toISOString()
       validationEvent.status = "RUNNING"
+      await this.pushToDatastore()
     }
 
     const { error, data: responseData } = await Agent.fireRequest(rule, data)
