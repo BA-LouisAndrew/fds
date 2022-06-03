@@ -115,7 +115,10 @@ export class ValidationEngine<T> {
       await this.pushToDatastore()
     }
 
-    const { error, data: responseData } = await Agent.fireRequest(rule, data)
+    const { error, data: responseData } = await Agent.fireRequest(rule, {
+      customer: data,
+    })
+
     if (error) {
       return {
         messages: [
@@ -127,7 +130,10 @@ export class ValidationEngine<T> {
     }
 
     const evaluator = EvaluatorFactory.getEvaluator(condition)
-    return evaluator.evaluate(responseData)
+    return evaluator.evaluate({
+      response: responseData,
+      customer: data,
+    })
   }
 
   private async reviewEvaluationResult(evaluationResult: EvaluationResult, rule: ValidationRule) {

@@ -4,7 +4,7 @@ import { ValidationRule } from "@/types/rule"
 export const sampleRule: ValidationRule = {
   skip: false,
   condition: {
-    path: "$.statusCode",
+    path: "$.response.statusCode",
     operator: "eq",
     type: "number",
     value: 200,
@@ -22,14 +22,14 @@ export const sampleRuleWithBoolCondition: ValidationRule = {
   condition: {
     any: [
       {
-        path: "$.statusCode",
+        path: "$.response.statusCode",
         operator: "eq",
         value: 200,
         failMessage: "Status code doesn't equal to 200",
         type: "number",
       },
       {
-        path: "$.body.success",
+        path: "$.response.body.success",
         operator: "eq",
         type: "boolean",
         value: true,

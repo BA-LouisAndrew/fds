@@ -15,7 +15,7 @@ describe("Validation engine: Validate rule set", () => {
   const ruleA: ValidationRule = {
     skip: false,
     condition: {
-      path: "$.statusCode",
+      path: "$.response.statusCode",
       operator: "eq",
       type: "number",
       value: 200,
@@ -33,14 +33,14 @@ describe("Validation engine: Validate rule set", () => {
     condition: {
       all: [
         {
-          path: "$.statusCode",
+          path: "$.response.statusCode",
           operator: "eq",
           type: "number",
           value: 201,
           failMessage: "Status code doesn't equal to 201",
         },
         {
-          path: "$.body.message",
+          path: "$.response.body.message",
           type: "string",
           operator: "eq",
           value: "Operation successful",
@@ -97,13 +97,16 @@ describe("Validation engine: Validate rule set", () => {
     nock("http://localhost:5001").get("/validate").reply(201)
     nock("http://localhost:5003").post("/validate").reply(204, { message: "Operation successful" })
 
-    const result = await new ValidationEngine().validateRuleset([
-      {
-        ...ruleA,
-        skip: true,
-      },
-      ruleB,
-    ], {})
+    const result = await new ValidationEngine().validateRuleset(
+      [
+        {
+          ...ruleA,
+          skip: true,
+        },
+        ruleB,
+      ],
+      {},
+    )
 
     expect(result.fraudScore).toEqual(0.5)
     expect(result.totalChecks).toEqual(2)
