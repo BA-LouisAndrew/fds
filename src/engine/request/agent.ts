@@ -2,7 +2,7 @@ import { Method, Response as GotResponse } from "got"
 import jp from "jsonpath"
 
 import { ApiResponse } from "@/types/api"
-import { GenericObject, ValidationRule } from "@/types/rule"
+import { ValidationRule } from "@/types/rule"
 
 import { Context } from "./context"
 
@@ -31,6 +31,7 @@ export class Agent {
       const response = await this.client<ResponseType>(endpoint, {
         method: method as Method,
         retry: retryStrategy || {},
+        headers: this.getHeader(rule, data),
         json: this.getJSONBody(rule, data),
       })
 
@@ -76,12 +77,40 @@ export class Agent {
     }
 
     return Object.entries(requestBody)
-      .map(([key, value]) => {
-        const dataFromPath = jp.query(data, value)[0]
-        return {
-          [key]: dataFromPath ?? value,
-        }
-      })
+      .map((entry) => this.accessDataFromPath(entry, data))
       .reduce((a, b) => ({ ...a, ...b }), {})
+  }
+
+  private static getHeader({ requestHeader }: ValidationRule, data: any) {
+    if (!requestHeader) {
+      return undefined
+    }
+
+    return Object.entries(requestHeader)
+      .map((entry) => this.accessDataFromPath(entry, data))
+      .reduce((a, b) => ({ ...a, ...b }), {})
+  }
+
+  private static accessDataFromPath([key, value]: [string, any], data: any) {
+    if (typeof value !== "string") {
+      return {
+        [key]: value,
+      }
+    }
+
+    const SEPARATOR = " "
+    const splitted = value.split(SEPARATOR)
+    return {
+      [key]: splitted
+        .map((chunk) => {
+          try {
+            const dataFromPath = jp.query(data, chunk)[0]
+            return dataFromPath ?? chunk
+          } catch {
+            return chunk
+          }
+        })
+        .join(SEPARATOR),
+    }
   }
 }

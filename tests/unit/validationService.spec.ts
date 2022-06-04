@@ -13,8 +13,19 @@ import { prismaValidationRule } from "@/seed/rule"
 import { minifiedValidation, sampleValidation } from "@/seed/validation"
 
 const scheduleRulesetValidation = vi.fn()
+const setSecrets = vi.fn().mockImplementation(() => ({
+  scheduleRulesetValidation,
+  setRuleset,
+}))
+const setRuleset = vi.fn().mockImplementation(() => ({
+  setSecrets,
+  scheduleRulesetValidation,
+}))
+
 function ValidationEngine() {
   this.scheduleRulesetValidation = scheduleRulesetValidation
+  this.setRuleset = setRuleset
+  this.setSecrets = setSecrets
 }
 
 vi.mock("@/engine/validationEngine", () => ({
@@ -37,17 +48,14 @@ describe("Validation service class", () => {
     const { data } = await ValidationService.scheduleRulesetValidation(sampleCustomer)
 
     expect(scheduleRulesetValidation).toBeCalled()
-    expect(scheduleRulesetValidation).toBeCalledWith(
-      [
-        {
-          ...prismaValidationRule,
-          requestBody: undefined,
-          requestUrlParameter: undefined,
-          retryStrategy: undefined,
-        },
-      ],
-      expect.anything(),
-    )
+    expect(setRuleset).toBeCalledWith([
+      {
+        ...prismaValidationRule,
+        requestBody: undefined,
+        requestUrlParameter: undefined,
+        retryStrategy: undefined,
+      },
+    ])
 
     expect(data?.validationId).toEqual("Hi-there")
   })

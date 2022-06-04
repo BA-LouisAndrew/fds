@@ -88,5 +88,47 @@ describe("Agent", () => {
     )
   })
 
+  it("passes the correct `requestHeader` to the agent", async () => {
+    const rule = {
+      ...sampleRule,
+      requestHeader: {
+        Hi: "MOM",
+      },
+    }
+    await Agent.fireRequest(rule, {})
+
+    expect(mockContext.client).toBeCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: {
+          Hi: "MOM",
+        },
+      }),
+    )
+  })
+
+  it("passes the correct `requestHeader` that contains access path to the agent", async () => {
+    const rule = {
+      ...sampleRule,
+      requestHeader: {
+        Authorization: "Bearer $.secrets.API_KEY",
+      },
+    }
+    await Agent.fireRequest(rule, {
+      secrets: {
+        API_KEY: "Hi mom",
+      },
+    })
+
+    expect(mockContext.client).toBeCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: {
+          Authorization: "Bearer Hi mom",
+        },
+      }),
+    )
+  })
+
   it.skip("passes the correct parameters to the URL")
 })

@@ -8,12 +8,14 @@ import { Customer } from "@/types/customer"
 import { MinifiedValidation, Validation } from "@/types/validation"
 
 import { RulesService } from "../rules/rulesService"
+import { SecretsService } from "../secret/secretsService"
 
 export type ValidationSchedule = Pick<Validation, "validationId" | "additionalInfo">
 
 export class ValidationService {
   static async scheduleRulesetValidation(customer: Customer): Promise<ApiResponse<ValidationSchedule>> {
     const { data: ruleset, error } = await RulesService.listRules()
+    const secrets = await SecretsService.listSecrets()
     if (error) {
       return {
         data: null,
@@ -21,15 +23,34 @@ export class ValidationService {
       }
     }
 
-    const { validationId, additionalInfo } = await new ValidationEngine<Customer>().scheduleRulesetValidation(
-      ruleset,
-      customer,
-    )
+    const { validationId, additionalInfo } = await new ValidationEngine<Customer>()
+      .setRuleset(ruleset)
+      .setSecrets(secrets)
+      .scheduleRulesetValidation(customer)
+
     return {
       data: {
         validationId,
         additionalInfo,
       },
+      error: null,
+    }
+  }
+
+  static async validateSingleRule(ruleName: string, customer: Customer): Promise<ApiResponse<Validation>> {
+    const { data: rule, error } = await RulesService.getRule(ruleName)
+    const secrets = await SecretsService.listSecrets()
+    if (error) {
+      return {
+        data: null,
+        error: {
+          message: "Not found",
+        },
+      }
+    }
+
+    return {
+      data: await new ValidationEngine<Customer>().setRuleset([rule]).setSecrets(secrets).validateSingleRule(customer),
       error: null,
     }
   }

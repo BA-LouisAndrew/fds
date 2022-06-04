@@ -61,7 +61,7 @@ describe("Validation engine: Validate rule set", () => {
     nock("http://localhost:5001").get("/validate").reply(200)
     nock("http://localhost:5003").post("/validate").reply(201, { message: "Operation successful" })
 
-    const result = await new ValidationEngine().validateRuleset(ruleset, {})
+    const result = await new ValidationEngine().setRuleset(ruleset).validateRuleset({})
 
     expect(result.fraudScore).toEqual(0)
     expect(result.totalChecks).toEqual(2)
@@ -73,7 +73,7 @@ describe("Validation engine: Validate rule set", () => {
     nock("http://localhost:5001").get("/validate").reply(200)
     nock("http://localhost:5003").post("/validate").reply(204, { message: "Operation successful" })
 
-    const result = await new ValidationEngine().validateRuleset(ruleset, {})
+    const result = await new ValidationEngine().setRuleset(ruleset).validateRuleset({})
 
     expect(result.fraudScore).toEqual(0.25)
     expect(result.totalChecks).toEqual(2)
@@ -85,7 +85,7 @@ describe("Validation engine: Validate rule set", () => {
     nock("http://localhost:5001").get("/validate").reply(400)
     nock("http://localhost:5003").post("/validate").reply(204, { message: "Operation successful" })
 
-    const result = await new ValidationEngine().validateRuleset(ruleset, {})
+    const result = await new ValidationEngine().setRuleset(ruleset).validateRuleset({})
 
     expect(result.fraudScore).toEqual(0.3)
     expect(result.totalChecks).toEqual(2)
@@ -97,16 +97,15 @@ describe("Validation engine: Validate rule set", () => {
     nock("http://localhost:5001").get("/validate").reply(201)
     nock("http://localhost:5003").post("/validate").reply(204, { message: "Operation successful" })
 
-    const result = await new ValidationEngine().validateRuleset(
-      [
+    const result = await new ValidationEngine()
+      .setRuleset([
         {
           ...ruleA,
           skip: true,
         },
         ruleB,
-      ],
-      {},
-    )
+      ])
+      .validateRuleset({})
 
     expect(result.fraudScore).toEqual(0.5)
     expect(result.totalChecks).toEqual(2)

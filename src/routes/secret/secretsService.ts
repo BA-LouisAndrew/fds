@@ -5,6 +5,18 @@ import { ApiErrorResponse, ApiResponse, ApiSuccessResponse } from "@/types/api"
 import { Secret } from "@/types/secret"
 
 export class SecretsService {
+  /**
+   * Only to be used internally!
+   */
+  static async listSecrets(): Promise<Secret[]> {
+    try {
+      const secrets = await Database.secret.findMany()
+      return secrets
+    } catch {
+      return []
+    }
+  }
+
   static async listSecretKeys(): Promise<ApiSuccessResponse<string[]>> {
     try {
       const secrets = await Database.secret.findMany()

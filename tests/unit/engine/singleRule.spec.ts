@@ -30,7 +30,7 @@ describe("Validation engine: Validate single rule", () => {
 
   it("returns a correct result for successful validation with a single condition", async () => {
     nock("http://localhost/5001").get("/validate").reply(200)
-    const result = await new ValidationEngine().validateSingleRule(rule, {})
+    const result = await new ValidationEngine().setRuleset([rule]).validateSingleRule({})
 
     expect(result.fraudScore).toEqual(0)
     expect(result.totalChecks).toEqual(1)
@@ -40,7 +40,7 @@ describe("Validation engine: Validate single rule", () => {
 
   it("returns a correct result for unsuccessful validation with a single condition", async () => {
     nock("http://localhost/5001").get("/validate").reply(404)
-    const result = await new ValidationEngine().validateSingleRule(rule, {})
+    const result = await new ValidationEngine().setRuleset([rule]).validateSingleRule({})
 
     expect(result.fraudScore).toEqual(rule.failScore)
     expect(result.totalChecks).toEqual(1)
@@ -50,30 +50,31 @@ describe("Validation engine: Validate single rule", () => {
 
   it("returns a correct result for successful validation with a boolean condition", async () => {
     nock("http://localhost/5001").get("/validate").reply(200, { success: true })
-    const result = await new ValidationEngine().validateSingleRule(
-      {
-        ...rule,
-        condition: {
-          all: [
-            {
-              path: "$.response.statusCode",
-              operator: "eq",
-              type: "number",
-              value: 200,
-              failMessage: "Status code doesn't equal to 200",
-            },
-            {
-              path: "$.response.body.success",
-              operator: "eq",
-              type: "boolean",
-              value: true,
-              failMessage: "It fails!",
-            },
-          ],
+    const result = await new ValidationEngine()
+      .setRuleset([
+        {
+          ...rule,
+          condition: {
+            all: [
+              {
+                path: "$.response.statusCode",
+                operator: "eq",
+                type: "number",
+                value: 200,
+                failMessage: "Status code doesn't equal to 200",
+              },
+              {
+                path: "$.response.body.success",
+                operator: "eq",
+                type: "boolean",
+                value: true,
+                failMessage: "It fails!",
+              },
+            ],
+          },
         },
-      },
-      {},
-    )
+      ])
+      .validateSingleRule({})
 
     expect(result.fraudScore).toEqual(0)
     expect(result.totalChecks).toEqual(1)
@@ -83,30 +84,31 @@ describe("Validation engine: Validate single rule", () => {
 
   it("returns a correct result for successful validation with a boolean condition", async () => {
     nock("http://localhost/5001").get("/validate").reply(200, { success: false })
-    const result = await new ValidationEngine().validateSingleRule(
-      {
-        ...rule,
-        condition: {
-          all: [
-            {
-              path: "$.response.statusCode",
-              operator: "eq",
-              type: "number",
-              value: 200,
-              failMessage: "Status code doesn't equal to 200",
-            },
-            {
-              path: "$.response.body.success",
-              operator: "eq",
-              type: "boolean",
-              value: true,
-              failMessage: "It fails!",
-            },
-          ],
+    const result = await new ValidationEngine()
+      .setRuleset([
+        {
+          ...rule,
+          condition: {
+            all: [
+              {
+                path: "$.response.statusCode",
+                operator: "eq",
+                type: "number",
+                value: 200,
+                failMessage: "Status code doesn't equal to 200",
+              },
+              {
+                path: "$.response.body.success",
+                operator: "eq",
+                type: "boolean",
+                value: true,
+                failMessage: "It fails!",
+              },
+            ],
+          },
         },
-      },
-      {},
-    )
+      ])
+      .validateSingleRule({})
 
     expect(result.fraudScore).toEqual(rule.failScore)
     expect(result.totalChecks).toEqual(1)

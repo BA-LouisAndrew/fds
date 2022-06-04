@@ -12,8 +12,19 @@ import { initTestingServer } from "./setup"
 const base = "/api/v1/validate/"
 
 const scheduleRulesetValidation = vi.fn()
+const setSecrets = vi.fn().mockImplementation(() => ({
+  scheduleRulesetValidation,
+  setRuleset,
+}))
+const setRuleset = vi.fn().mockImplementation(() => ({
+  setSecrets,
+  scheduleRulesetValidation,
+}))
+
 function ValidationEngine() {
   this.scheduleRulesetValidation = scheduleRulesetValidation
+  this.setSecrets = setSecrets
+  this.setRuleset = setRuleset
 }
 
 vi.mock("@/engine/validationEngine", () => ({
@@ -39,6 +50,7 @@ describe("Validations endpoint", () => {
   it("POST /validate should schedule an async validation", async () => {
     scheduleRulesetValidation.mockResolvedValue(validationSchedule)
     mockContext.prisma.validationRule.findMany.mockResolvedValueOnce([prismaValidationRule])
+    mockContext.prisma.secret.findMany.mockResolvedValueOnce([])
 
     const response = await agent.post(base).send(sampleCustomer)
 
@@ -51,6 +63,7 @@ describe("Validations endpoint", () => {
   it("POST /validate should return a 422 if request body is not valid", async () => {
     scheduleRulesetValidation.mockResolvedValue(validationSchedule)
     mockContext.prisma.validationRule.findMany.mockResolvedValueOnce([prismaValidationRule])
+    mockContext.prisma.secret.findMany.mockResolvedValueOnce([])
 
     const { address: _, ...invalid } = sampleCustomer
     const response = await agent.post(base).send(invalid)

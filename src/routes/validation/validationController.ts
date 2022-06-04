@@ -85,7 +85,7 @@ export class ValidationController extends Controller {
     @Body() requestBody: Customer,
     @Path() ruleName: ValidationRule["name"],
   ): Promise<Validation | NotFound> {
-    const { data, error } = await RulesService.getRule(ruleName)
+    const { data, error } = await ValidationService.validateSingleRule(ruleName, requestBody)
     if (error) {
       this.setStatus(404)
       return {
@@ -93,7 +93,7 @@ export class ValidationController extends Controller {
       }
     }
 
-    return await new ValidationEngine<Customer>().validateSingleRule(data, requestBody)
+    return data
   }
 }
 
