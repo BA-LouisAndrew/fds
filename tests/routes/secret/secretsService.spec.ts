@@ -1,7 +1,7 @@
 import { createMockContext, MockContext } from "@/engine/database/context"
 import { Database } from "@/engine/database/database"
 import { SecretsService } from "@/routes/secret/secretsService"
-import { sampleSecret } from "@/seed/secrets"
+import { samplePrismaSecret } from "@/seed/secrets"
 
 describe("Rules Service class", () => {
   let mockContext: MockContext
@@ -12,29 +12,29 @@ describe("Rules Service class", () => {
   })
 
   it("should list the keys of available secrets", async () => {
-    mockContext.prisma.secret.findMany.mockResolvedValue([sampleSecret])
+    mockContext.prisma.secret.findMany.mockResolvedValue([samplePrismaSecret])
 
     const result = await SecretsService.listSecretKeys()
-    expect(result.data).toEqual([sampleSecret.key])
+    expect(result.data).toEqual([samplePrismaSecret.key])
   })
 
   it("should create a new secret if the parameter is correct", async () => {
-    mockContext.prisma.secret.create.mockResolvedValue(sampleSecret)
+    mockContext.prisma.secret.create.mockResolvedValue(samplePrismaSecret)
 
-    const result = await SecretsService.createSecretEntry(sampleSecret)
+    const result = await SecretsService.createSecretEntry(samplePrismaSecret)
     expect(result.data).toEqual(true)
   })
 
   it("should update the secret if parameter is correct", async () => {
-    mockContext.prisma.secret.update.mockResolvedValue(sampleSecret)
+    mockContext.prisma.secret.update.mockResolvedValue(samplePrismaSecret)
 
-    const result = await SecretsService.updateSecretValue(sampleSecret)
+    const result = await SecretsService.updateSecretValue(samplePrismaSecret)
     expect(result.data).toEqual(true)
   })
 
   it("should delete a secret if it exists", async () => {
-    mockContext.prisma.secret.delete.mockResolvedValue(sampleSecret)
-    const result = await SecretsService.deleteSecretEntry(sampleSecret.key)
+    mockContext.prisma.secret.delete.mockResolvedValue(samplePrismaSecret)
+    const result = await SecretsService.deleteSecretEntry(samplePrismaSecret.key)
     expect(result.data).toEqual(true)
   })
 })
