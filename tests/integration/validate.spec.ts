@@ -20,7 +20,7 @@ vi.mock("@/engine/validationEngine", () => ({
   ValidationEngine,
 }))
 
-describe("Rules CRUD endpoint", () => {
+describe("Validations endpoint", () => {
   let agent: SuperTest<Test>
   let mockContext: MockContext
   let dataStore: DataStore
