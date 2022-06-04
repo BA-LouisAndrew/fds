@@ -1,4 +1,4 @@
-import { Prisma, ValidationRule as PrismaValidationRule } from "@prisma/client"
+import { Prisma, Secret as PrismaSecret, ValidationRule as PrismaValidationRule } from "@prisma/client"
 
 import {
   BooleanCondition,
@@ -7,6 +7,7 @@ import {
   RetryStrategy,
   ValidationRule as TSValidationRule,
 } from "@/types/rule"
+import { Secret as TSSecret } from "@/types/secret"
 
 export const resolvePrismaType = (validationRule: PrismaValidationRule): TSValidationRule => ({
   ...validationRule,
@@ -26,3 +27,5 @@ export const resolveTSType = (validationRule: TSValidationRule): Omit<PrismaVali
   requestBody: (validationRule.requestBody as Prisma.JsonValue) ?? null,
   requestHeader: (validationRule.requestHeader as Prisma.JsonValue) ?? null,
 })
+
+export const resolvePrismaSecretType = ({ key, value }: PrismaSecret): TSSecret => ({ key, value })

@@ -1,8 +1,8 @@
-import { Secret } from "@prisma/client"
 import { v4 } from "uuid"
 
 import { EventBus } from "@/eventBus"
 import { ValidationRule } from "@/types/rule"
+import { Secret } from "@/types/secret"
 import { Validation, ValidationEventResult, ValidationEventStatus } from "@/types/validation"
 
 import { EvaluationResult } from "./condition/evaluator"
