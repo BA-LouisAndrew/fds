@@ -11,11 +11,15 @@
   "tags": [
    {
     "name": "Rules",
-    "description": "Operations about validation rules"
+    "description": "CRUD operations on validation rules"
    },
    {
     "name": "Validation",
     "description": "Operations to run validation / get validation result"
+   },
+   {
+    "name": "Secrets",
+    "description": "CRUD operations on secrets to be used on validation (e.g. API Key)"
    },
    {
     "name": "Utils",

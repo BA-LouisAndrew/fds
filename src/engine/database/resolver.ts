@@ -15,6 +15,7 @@ export const resolvePrismaType = (validationRule: PrismaValidationRule): TSValid
   retryStrategy: (validationRule.retryStrategy as RetryStrategy) ?? undefined,
   requestUrlParameter: (validationRule.requestUrlParameter as GenericObject) ?? undefined,
   requestBody: (validationRule.requestBody as GenericObject) ?? undefined,
+  requestHeader: (validationRule.requestHeader as GenericObject) ?? undefined,
 })
 
 export const resolveTSType = (validationRule: TSValidationRule): Omit<PrismaValidationRule, "id"> => ({
@@ -23,4 +24,5 @@ export const resolveTSType = (validationRule: TSValidationRule): Omit<PrismaVali
   retryStrategy: (validationRule.retryStrategy as Prisma.JsonValue) ?? null,
   requestUrlParameter: (validationRule.requestUrlParameter as Prisma.JsonValue) ?? null,
   requestBody: (validationRule.requestBody as Prisma.JsonValue) ?? null,
+  requestHeader: (validationRule.requestHeader as Prisma.JsonValue) ?? null,
 })

@@ -96,7 +96,7 @@ export class RulesController extends Controller {
   @SuccessResponse(204, "Deleted")
   @Delete("{ruleName}")
   public async deleteRule(@Path() ruleName: string): Promise<void | WentWrong> {
-    const { data, error } = await RulesService.deleteRule(ruleName)
+    const { error } = await RulesService.deleteRule(ruleName)
     if (error) {
       this.setStatus(400)
       return {

@@ -15,6 +15,9 @@ export const sampleRule: ValidationRule = {
   endpoint: "http://localhost/5001/validate",
   method: "GET",
   failScore: 0.1,
+  requestHeader: {
+    Authorization: "Bearer $API_KEY",
+  },
 }
 
 export const sampleRuleWithBoolCondition: ValidationRule = {

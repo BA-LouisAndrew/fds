@@ -1,3 +1,4 @@
+import { Secret } from "@prisma/client"
 import { v4 } from "uuid"
 
 import { EventBus } from "@/eventBus"
@@ -13,11 +14,12 @@ import { Agent } from "./request/agent"
 type ValidationEnginePropertyType<T> = Omit<Validation<T>, "fraudScore" | "passedChecks" | "failedChecks">
 
 export class ValidationEngine<T> {
-  static ID = 0
-
   private validation: ValidationEnginePropertyType<T>
   private fraudScores: number[]
   private store = DataStore.getInstance()
+
+  private secrets: Secret[] = []
+  private ruleset: ValidationRule[] = []
 
   private get validationResult(): Validation<T> {
     return {
@@ -44,19 +46,37 @@ export class ValidationEngine<T> {
     return this.validation.events.filter((event) => event.status === status).map(({ status: _, ...event }) => event)
   }
 
-  async scheduleRulesetValidation(ruleset: ValidationRule[], data: T): Promise<Validation<T>> {
-    await this.constructValidationObject(ruleset, data)
-    this.validateRuleset(ruleset, data)
+  setSecrets(secrets: Secret[]) {
+    this.secrets = secrets
+    return this
+  }
+
+  setRuleset(ruleset: ValidationRule[]) {
+    this.ruleset = ruleset
+    return this
+  }
+
+  async scheduleRulesetValidation(data: T): Promise<Validation<T>> {
+    if (this.ruleset.length === 0) {
+      throw new Error("Ruleset is not set")
+    }
+
+    await this.constructValidationObject(data)
+    this.validateRuleset(data)
 
     return this.validationResult
   }
 
-  async validateRuleset(ruleset: ValidationRule[], data: T): Promise<Validation<T>> {
-    if (!this.validation) {
-      await this.constructValidationObject(ruleset, data) // Override flow for testing
+  async validateRuleset(data: T): Promise<Validation<T>> {
+    if (this.ruleset.length === 0) {
+      throw new Error("Ruleset is not set")
     }
 
-    for await (const rule of ruleset.filter(({ skip }) => !skip)) {
+    if (!this.validation) {
+      await this.constructValidationObject(data) // Override flow for testing
+    }
+
+    for await (const rule of this.ruleset.filter(({ skip }) => !skip)) {
       const evaluationResult = await this.evaluateRule(rule, data)
       await this.reviewEvaluationResult(evaluationResult, rule)
     }
@@ -66,8 +86,13 @@ export class ValidationEngine<T> {
     return this.validationResult
   }
 
-  async validateSingleRule(rule: ValidationRule, data: T): Promise<Validation<T>> {
-    await this.constructValidationObject([rule], data)
+  async validateSingleRule(data: T): Promise<Validation<T>> {
+    if (this.ruleset.length === 0) {
+      throw new Error("Ruleset is not set")
+    }
+
+    const [rule] = this.ruleset
+    await this.constructValidationObject(data)
 
     const evaluationResult = await this.evaluateRule(rule, data)
     await this.reviewEvaluationResult(evaluationResult, rule)
@@ -77,20 +102,20 @@ export class ValidationEngine<T> {
     return this.validationResult
   }
 
-  private async constructValidationObject(ruleset: ValidationRule[], data: T) {
+  private async constructValidationObject(data: T) {
     const validationId = await this.createValidationId()
 
     this.validation = {
       validationId,
-      totalChecks: ruleset.length,
+      totalChecks: this.ruleset.length,
       runnedChecks: 0,
       currentlyRunning: undefined,
-      skippedChecks: ruleset.filter((rule) => rule.skip).map(({ name }) => name),
+      skippedChecks: this.ruleset.filter((rule) => rule.skip).map(({ name }) => name),
       additionalInfo: {
         startDate: new Date().toISOString(),
         customerInformation: data,
       },
-      events: ruleset
+      events: this.ruleset
         .filter((rule) => !rule.skip)
         .map((rule) => ({
           name: rule.name,
@@ -117,6 +142,7 @@ export class ValidationEngine<T> {
 
     const { error, data: responseData } = await Agent.fireRequest(rule, {
       customer: data,
+      secrets: this.secrets,
     })
 
     if (error) {
@@ -133,6 +159,7 @@ export class ValidationEngine<T> {
     return evaluator.evaluate({
       response: responseData,
       customer: data,
+      secrets: this.secrets,
     })
   }
 
@@ -158,9 +185,7 @@ export class ValidationEngine<T> {
   }
 
   private async createValidationId(): Promise<Validation["validationId"]> {
-    ValidationEngine.ID++
-    const id = "validation-" + ValidationEngine.ID
-    // TODO See if id exists on DB and use `v4` to create UUID
+    const id = v4() // TODO See if id exists on DB and use `v4` to create UUID
     return id
   }
 

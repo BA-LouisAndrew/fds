@@ -26,4 +26,10 @@ model ValidationRule {
   retryStrategy       Json?
   requestUrlParameter Json?
   requestBody         Json?
+  requestHeader       Json?
+}
+
+model Secret {
+ key    String @id @default(auto()) @map("_id") @db.ObjectId
+ value  String
 }

@@ -29,6 +29,10 @@ export class Database {
     return this.prisma.validationRule
   }
 
+  static get secret() {
+    return this.prisma.secret
+  }
+
   static async cacheValidationRule(rule: ValidationRule): Promise<void> {
     if (!this.cache) {
       return
