@@ -130,5 +130,19 @@ describe("Agent", () => {
     )
   })
 
-  it.skip("passes the correct parameters to the URL")
+  it("passes the correct parameters to the URL", async () => {
+    const rule = {
+      ...sampleRule,
+      endpoint: "http://localhost:8000/$api/$abc",
+      requestUrlParameter: {
+        api: "$.a",
+        abc: "second",
+      },
+    }
+    await Agent.fireRequest(rule, {
+      a: "hi",
+    })
+
+    expect(mockContext.client).toBeCalledWith("http://localhost:8000/hi/second", expect.anything())
+  })
 })
