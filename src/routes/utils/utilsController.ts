@@ -45,4 +45,42 @@ export class UtilityController extends Controller {
       data: JSON.parse(await UtilityService.printCache()),
     }
   }
+
+  @Post("/is-email-domain-blacklisted")
+  public async isUserEmailDomainBlacklisted(
+    @Body() requestBody: { email: string },
+    @Query() timeout?: number,
+  ): Promise<{ data: boolean }> {
+    const data = await UtilityService.withTimeout(UtilityService.isEmailDomainBlacklisted(requestBody.email), timeout)
+    return { data }
+  }
+
+  @Post("/is-user-registered-in-external-service")
+  public async isUserRegistered(
+    @Body() requestBody: { lastName: string },
+    @Query() timeout?: number,
+  ): Promise<{ registered: boolean }> {
+    const registered = await UtilityService.withTimeout(
+      UtilityService.isUserRegisteredInExternalDomain(requestBody.lastName),
+      timeout,
+    )
+
+    return { registered }
+  }
+
+  @Get("/blacklisted-emails")
+  public async getBlacklistedEmails(@Query() timeout?: number): Promise<{ blacklistedEmails: string[] }> {
+    const blacklistedEmails = await UtilityService.withTimeout(UtilityService.getBlacklistedEmails(), timeout)
+    return {
+      blacklistedEmails,
+    }
+  }
+
+  @Get("/operating-countries")
+  public async getOperatingCountries(@Query() timeout?: number): Promise<{ operatingCountries: string[] }> {
+    const operatingCountries = await UtilityService.withTimeout(UtilityService.getOperatingCountries(), timeout)
+    return {
+      operatingCountries,
+    }
+  }
 }
