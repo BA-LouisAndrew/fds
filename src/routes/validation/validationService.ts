@@ -161,13 +161,14 @@ export class ValidationService {
         return parsedValue
       }
 
-      const { validationId, totalChecks, runnedChecks, fraudScore, skippedChecks } = parsedValue
+      const { validationId, totalChecks, runnedChecks, fraudScore, skippedChecks, additionalInfo } = parsedValue
       return {
         validationId,
         totalChecks,
         runnedChecks,
         fraudScore,
         skippedChecks,
+        additionalInfo,
       }
     } catch {
       return null

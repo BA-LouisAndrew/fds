@@ -1,4 +1,4 @@
-import { Validation } from "@/types/validation"
+import { MinifiedValidation, Validation } from "@/types/validation"
 
 import { sampleCustomer } from "./customer"
 import { sampleRule } from "./rule"
@@ -35,12 +35,13 @@ export const sampleValidation: Validation = {
   events: [],
 }
 
-export const minifiedValidation = {
+export const minifiedValidation: MinifiedValidation = {
   validationId: "52907745-7672-470e-a803-a2f8feb52944",
   skippedChecks: ["skipped-check-1", "skipped-check-2"],
   totalChecks: 6,
   runnedChecks: 2,
   fraudScore: 0.3,
+  additionalInfo: sampleValidation.additionalInfo,
 }
 
 export const validationSchedule = {

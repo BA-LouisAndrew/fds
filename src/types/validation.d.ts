@@ -105,5 +105,5 @@ export type ValidationAdditionalInfo<T> = {
 
 export type MinifiedValidation = Pick<
   Validation,
-  "validationId" | "totalChecks" | "runnedChecks" | "fraudScore" | "skippedChecks"
+  "validationId" | "totalChecks" | "runnedChecks" | "fraudScore" | "skippedChecks" | "additionalInfo"
 >
