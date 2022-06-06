@@ -144,6 +144,7 @@ export class ValidationService {
         error: null,
       }
     } catch (e) {
+      console.error(e)
       return {
         data: null,
         error: {
