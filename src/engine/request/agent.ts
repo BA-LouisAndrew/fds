@@ -25,10 +25,10 @@ export class Agent {
     rule: ValidationRule,
     data: DataType,
   ): Promise<FireRequestReturnType> {
-    const { endpoint, method, retryStrategy } = rule
+    const { method, retryStrategy } = rule
 
     try {
-      const response = await this.client<ResponseType>(endpoint, {
+      const response = await this.client<ResponseType>(this.getUrl(rule, data), {
         method: method as Method,
         retry: retryStrategy || {},
         headers: this.getHeader(rule, data),
@@ -89,6 +89,15 @@ export class Agent {
     return Object.entries(requestHeader)
       .map((entry) => this.accessDataFromPath(entry, data))
       .reduce((a, b) => ({ ...a, ...b }), {})
+  }
+
+  private static getUrl({ endpoint, requestUrlParameter }: ValidationRule, data: any) {
+    return Object.entries(requestUrlParameter || {})
+      .map((entry) => {
+        const [key] = entry
+        return [key, this.accessDataFromPath(entry, data)[key]]
+      })
+      .reduce((a, [key, value]) => a.replace(`$${key}`, value), endpoint)
   }
 
   private static accessDataFromPath([key, value]: [string, any], data: any) {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Route, Tags } from "tsoa"
+import { Body, Controller, Get, Path, Post, Query, Route, Tags } from "tsoa"
 
 import { UtilityService } from "./utilsService"
 
@@ -55,13 +55,10 @@ export class UtilityController extends Controller {
     return { data }
   }
 
-  @Post("/is-user-registered-in-external-service")
-  public async isUserRegistered(
-    @Body() requestBody: { lastName: string },
-    @Query() timeout?: number,
-  ): Promise<{ registered: boolean }> {
+  @Post("/is-user-registered-in-external-service/{lastName}")
+  public async isUserRegistered(@Path() lastName: string, @Query() timeout?: number): Promise<{ registered: boolean }> {
     const registered = await UtilityService.withTimeout(
-      UtilityService.isUserRegisteredInExternalDomain(requestBody.lastName),
+      UtilityService.isUserRegisteredInExternalDomain(lastName),
       timeout,
     )
 
