@@ -51,7 +51,7 @@ export class ValidationEngine<T> {
   }
 
   setRuleset(ruleset: ValidationRule[]) {
-    this.ruleset = ruleset
+    this.ruleset = [...ruleset.sort((a, b) => b.priority - a.priority)]
     return this
   }
 
