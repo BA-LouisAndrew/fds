@@ -26,4 +26,30 @@ export class UtilityService {
       }, timeout ?? TIMEOUT)
     })
   }
+
+  static isEmailDomainBlacklisted(email: string): boolean {
+    const BLACKLISTED_DOMAINS = ["@fraud.com", "@shady.co.id", "@tx.go", "@crime.com"]
+    return BLACKLISTED_DOMAINS.some((domain) => email.includes(domain))
+  }
+
+  static isUserRegisteredInExternalDomain(lastName: string) {
+    const REGISTERED_LAST_NAMES = ["Thomas", "Mouse", "Goofy", "Bear"]
+    return REGISTERED_LAST_NAMES.some((name) => lastName === name)
+  }
+
+  static getBlacklistedEmails(): string[] {
+    return ["hello-world@mickey.com", "thomas-and@friends.com", "goofy@shady.co.id", "scooby-doo@fraud.co"]
+  }
+
+  static getOperatingCountries(): string[] {
+    return ["Germany", "DE", "United States", "US", "France", "FR"]
+  }
+
+  static withTimeout<T>(value: T, timeout?: number): Promise<T> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(value)
+      }, timeout ?? TIMEOUT)
+    })
+  }
 }

@@ -1,8 +1,7 @@
 import { v4 } from "uuid"
 
 import { EventBus } from "@/eventBus"
-import { ValidationRule } from "@/types/rule"
-import { Secret } from "@/types/secret"
+import { GenericObject, ValidationRule } from "@/types/rule"
 import { Validation, ValidationEventResult, ValidationEventStatus } from "@/types/validation"
 
 import { EvaluationResult } from "./condition/evaluator"
@@ -18,7 +17,7 @@ export class ValidationEngine<T> {
   private fraudScores: number[]
   private store = DataStore.getInstance()
 
-  private secrets: Secret[] = []
+  private secrets: GenericObject = {}
   private ruleset: ValidationRule[] = []
 
   private get validationResult(): Validation<T> {
@@ -46,13 +45,13 @@ export class ValidationEngine<T> {
     return this.validation.events.filter((event) => event.status === status).map(({ status: _, ...event }) => event)
   }
 
-  setSecrets(secrets: Secret[]) {
+  setSecrets(secrets: GenericObject) {
     this.secrets = secrets
     return this
   }
 
   setRuleset(ruleset: ValidationRule[]) {
-    this.ruleset = ruleset
+    this.ruleset = [...ruleset.sort((a, b) => b.priority - a.priority)]
     return this
   }
 

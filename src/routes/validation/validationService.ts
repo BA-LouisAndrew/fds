@@ -1,7 +1,6 @@
 import { Response as ExResponse } from "express"
 
 import { DataStore } from "@/engine/data/dataStore"
-import { resolvePrismaSecretType } from "@/engine/database/resolver"
 import { ValidationEngine } from "@/engine/validationEngine"
 import { EventBus } from "@/eventBus"
 import { ApiResponse } from "@/types/api"
@@ -145,6 +144,7 @@ export class ValidationService {
         error: null,
       }
     } catch (e) {
+      console.error(e)
       return {
         data: null,
         error: {

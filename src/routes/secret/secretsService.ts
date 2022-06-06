@@ -8,12 +8,12 @@ export class SecretsService {
   /**
    * Only to be used internally!
    */
-  static async listSecrets(): Promise<Secret[]> {
+  static async listSecrets(): Promise<{ [key: string]: string }> {
     try {
       const secrets = await Database.secret.findMany()
-      return secrets
+      return secrets.map(({ key, value }) => ({ [key]: value })).reduce((a, b) => ({ ...a, ...b }), {})
     } catch {
-      return []
+      return {}
     }
   }
 

@@ -19,6 +19,7 @@ const createRedisConfig = () => {
 
 export class RedisStore extends DataStore {
   client: RedisClientType
+  static MAX_SIZE = 25
 
   constructor() {
     super()
@@ -31,6 +32,14 @@ export class RedisStore extends DataStore {
 
     if (process.env.NODE_ENV !== "test") {
       console.log("> Redis instance connected.")
+    }
+  }
+
+  async validateKeys() {
+    const keys = await this.client.keys("*")
+    if (keys.length === RedisStore.MAX_SIZE) {
+      const [lastKey] = keys.splice(-1)
+      await this.delete(lastKey)
     }
   }
 
@@ -56,6 +65,9 @@ export class RedisStore extends DataStore {
 
   async list(prefix: string): Promise<string[]> {
     const keys = await this.client.keys(prefix + "*")
+    if (keys.length === 0) {
+      return []
+    }
 
     return (await this.client.mGet(keys)).filter(Boolean) as string[]
   }
