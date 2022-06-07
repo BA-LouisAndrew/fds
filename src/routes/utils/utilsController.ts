@@ -55,7 +55,7 @@ export class UtilityController extends Controller {
     return { data }
   }
 
-  @Post("/is-user-registered-in-external-service/{lastName}")
+  @Get("/is-user-registered-in-external-service/{lastName}")
   public async isUserRegistered(@Path() lastName: string, @Query() timeout?: number): Promise<{ registered: boolean }> {
     const registered = await UtilityService.withTimeout(
       UtilityService.isUserRegisteredInExternalDomain(lastName),
