@@ -38,7 +38,7 @@ export class Evaluator<T extends Condition | BooleanCondition> {
   }
 
   protected accessDataFromPath(data: any, path: any): any | null {
-    if (typeof path !== "string") {
+    if (typeof path !== "string" || path[0] !== "$") {
       return path
     }
 
