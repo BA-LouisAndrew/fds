@@ -17,7 +17,8 @@
     "swagger-ui-express": "4.4.0",
     "tiny-emitter": "2.1.0",
     "tsoa": "4.0.0",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "wait-port": "0.2.9"
   },
   "devDependencies": {
     "@types/amqplib": "0.8.2",
