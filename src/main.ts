@@ -5,13 +5,14 @@ import { Database } from "./engine/database/database"
 import { Notification } from "./engine/notification"
 import { Agent } from "./engine/request/agent"
 import { createContext as createRequestContext } from "./engine/request/context"
+import { RestartEngine } from "./engine/restartEngine"
 import { Config } from "./types/config"
 import { waitForRabbit } from "./utils/waitForRabbit"
 
 const port = process.env.PORT || 8000
 const CONFIG: Config = {
   enableCache: process.env.ENABLE_CACHE === "true" || true,
-  dataStore: process.env.DATA_STORE || "in-memory",
+  dataStore: (process.env.DATA_STORE as Config["dataStore"]) || "redis",
   notificationUrl: process.env.RABBITMQ_URL || "amqp://localhost",
   rabbitManagementUi: process.env.RABBITMQ_MANAGEMENT_UI,
   enableNotification: process.env.ENABLE_NOTIFICATION === "true" || true,
@@ -29,6 +30,10 @@ const CONFIG: Config = {
     if (!isRabbitAvailable) {
       throw new Error("> Rabbit is not available!")
     }
+  }
+
+  if (CONFIG.dataStore === "redis") {
+    await RestartEngine.runSuspendedValidations()
   }
 
   await notification.init(CONFIG.notificationUrl)
