@@ -4,58 +4,13 @@ import { initStore } from "@/engine/data/initStore"
 import { Agent } from "@/engine/request/agent"
 import { createContext } from "@/engine/request/context"
 import { ValidationEngine } from "@/engine/validationEngine"
-import { ValidationRule } from "@/types/rule"
+import { ruleA, ruleB, ruleset } from "@/seed/rule"
 
 describe("Validation engine: Validate rule set", () => {
   beforeAll(async () => {
     Agent.setClient(createContext())
     await initStore("in-memory").init()
   })
-
-  const ruleA: ValidationRule = {
-    skip: false,
-    condition: {
-      path: "$.response.statusCode",
-      operator: "eq",
-      type: "number",
-      value: 200,
-      failMessage: "Status code doesn't equal to 200",
-    },
-    name: "sample-rule",
-    priority: 0,
-    endpoint: "http://localhost:5001/validate",
-    method: "GET",
-    failScore: 0.1,
-  }
-
-  const ruleB: ValidationRule = {
-    skip: false,
-    condition: {
-      all: [
-        {
-          path: "$.response.statusCode",
-          operator: "eq",
-          type: "number",
-          value: 201,
-          failMessage: "Status code doesn't equal to 201",
-        },
-        {
-          path: "$.response.body.message",
-          type: "string",
-          operator: "eq",
-          value: "Operation successful",
-          failMessage: "Message is not right",
-        },
-      ],
-    },
-    name: "sample-rule-2",
-    priority: 10,
-    endpoint: "http://localhost:5003/validate",
-    method: "POST",
-    failScore: 0.5,
-  }
-
-  const ruleset = [ruleA, ruleB]
 
   it("returns the correct value if the validation for both rules succeed", async () => {
     nock("http://localhost:5001").get("/validate").reply(200)

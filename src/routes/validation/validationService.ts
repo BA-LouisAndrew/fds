@@ -154,6 +154,29 @@ export class ValidationService {
     }
   }
 
+  static async getFullValidationList(): Promise<ApiResponse<Validation[]>> {
+    try {
+      const validationStrings = await DataStore.getInstance().list(DataStore.VALIDATION_PREFIX)
+
+      const validationList = validationStrings
+        .map((stringifiedValue) => this.parseStringifiedValidation(stringifiedValue, false))
+        .filter(Boolean) as Validation[]
+
+      return {
+        data: validationList,
+        error: null,
+      }
+    } catch (e) {
+      console.error(e)
+      return {
+        data: null,
+        error: {
+          message: e,
+        },
+      }
+    }
+  }
+
   static parseStringifiedValidation(stringifiedValue: string, minify = false): Validation | MinifiedValidation | null {
     try {
       const parsedValue: Validation = JSON.parse(stringifiedValue)
