@@ -3,4 +3,5 @@ export interface Config {
   dataStore: "redis" | "in-memory"
   enableNotification: boolean
   notificationUrl?: string
+  rabbitManagementUi?: string
 }

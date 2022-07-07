@@ -6,13 +6,15 @@ import { Notification } from "./engine/notification"
 import { Agent } from "./engine/request/agent"
 import { createContext as createRequestContext } from "./engine/request/context"
 import { Config } from "./types/config"
+import { waitForRabbit } from "./utils/waitForRabbit"
 
 const port = process.env.PORT || 8000
 const CONFIG: Config = {
-  enableCache: true,
-  dataStore: "in-memory",
+  enableCache: process.env.ENABLE_CACHE === "true" || true,
+  dataStore: process.env.DATA_STORE || "in-memory",
   notificationUrl: process.env.RABBITMQ_URL || "amqp://localhost",
-  enableNotification: true,
+  rabbitManagementUi: process.env.RABBITMQ_MANAGEMENT_UI,
+  enableNotification: process.env.ENABLE_NOTIFICATION === "true" || true,
 }
 
 ;(async () => {
@@ -21,6 +23,14 @@ const CONFIG: Config = {
   const notification = new Notification()
   await database.init()
   await store.init()
+
+  if (CONFIG.enableNotification && CONFIG.rabbitManagementUi) {
+    const isRabbitAvailable = await waitForRabbit(CONFIG.rabbitManagementUi)
+    if (!isRabbitAvailable) {
+      throw new Error("> Rabbit is not available!")
+    }
+  }
+
   await notification.init(CONFIG.notificationUrl)
 
   Agent.setClient(createRequestContext())
