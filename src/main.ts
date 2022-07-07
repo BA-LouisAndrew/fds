@@ -22,8 +22,12 @@ const CONFIG: Config = {
   const store = initStore(CONFIG.dataStore) // In memory store
   const database = new Database(createDatabaseContext())
   const notification = new Notification()
+
+  Agent.setClient(createRequestContext())
+
   await database.init()
   await store.init()
+  await notification.init(CONFIG.notificationUrl)
 
   if (CONFIG.enableNotification && CONFIG.rabbitManagementUi) {
     const isRabbitAvailable = await waitForRabbit(CONFIG.rabbitManagementUi)
@@ -35,10 +39,6 @@ const CONFIG: Config = {
   if (CONFIG.dataStore === "redis") {
     await RestartEngine.runSuspendedValidations()
   }
-
-  await notification.init(CONFIG.notificationUrl)
-
-  Agent.setClient(createRequestContext())
 
   if (CONFIG.enableCache) {
     Database.setCache(store)
