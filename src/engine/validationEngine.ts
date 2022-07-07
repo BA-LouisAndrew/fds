@@ -45,6 +45,20 @@ export class ValidationEngine<T> {
     return this.validation.events.filter((event) => event.status === status).map(({ status: _, ...event }) => event)
   }
 
+  private getRunnableRuleset() {
+    const rulesQueue = this.validation.events
+      .filter(({ status }) => ["NOT_STARTED", "RUNNING"].includes(status))
+      .map(({ name }) => name)
+
+    return this.ruleset.filter(({ skip, name }) => {
+      if (skip) {
+        return false
+      }
+
+      return rulesQueue.includes(name)
+    })
+  }
+
   setSecrets(secrets: GenericObject) {
     this.secrets = secrets
     return this
@@ -52,6 +66,12 @@ export class ValidationEngine<T> {
 
   setRuleset(ruleset: ValidationRule[]) {
     this.ruleset = [...ruleset.sort((a, b) => b.priority - a.priority)]
+    return this
+  }
+
+  setValidation(validation: Validation<T>) {
+    this.validation = validation
+    this.fraudScores = [...Array(validation.runnedChecks).keys()].map(() => validation.fraudScore)
     return this
   }
 
@@ -75,7 +95,7 @@ export class ValidationEngine<T> {
       await this.constructValidationObject(data) // Override flow for testing
     }
 
-    for await (const rule of this.ruleset.filter(({ skip }) => !skip)) {
+    for await (const rule of this.getRunnableRuleset()) {
       const evaluationResult = await this.evaluateRule(rule, data)
       await this.reviewEvaluationResult(evaluationResult, rule)
     }
