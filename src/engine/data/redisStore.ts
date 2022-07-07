@@ -10,10 +10,6 @@ const createRedisConfig = () => {
 
   return {
     url: process.env.REDIS,
-    socket: {
-      tls: true,
-      rejectUnauthorized: false,
-    },
   }
 }
 
