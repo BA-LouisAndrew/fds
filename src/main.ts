@@ -12,7 +12,7 @@ import { waitForRabbit } from "./utils/waitForRabbit"
 const port = process.env.PORT || 8000
 const CONFIG: Config = {
   enableCache: process.env.ENABLE_CACHE === "true" || true,
-  dataStore: (process.env.DATA_STORE as Config["dataStore"]) || "redis",
+  dataStore: (process.env.DATA_STORE as Config["dataStore"]) || "in-memory",
   notificationUrl: process.env.RABBITMQ_URL || "amqp://localhost",
   rabbitManagementUi: process.env.RABBITMQ_MANAGEMENT_UI,
   enableNotification: process.env.ENABLE_NOTIFICATION === "true" || true,
