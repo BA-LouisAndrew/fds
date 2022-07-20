@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Path, Post, Query, Route, Tags } from "tsoa"
+import { Body, Controller, Get, Path, Post, Query, Response, Route, Tags } from "tsoa"
+
+import { NotFound } from "@/types/responses"
 
 import { UtilityService } from "./utilsService"
 
@@ -78,6 +80,23 @@ export class UtilityController extends Controller {
     const operatingCountries = await UtilityService.withTimeout(UtilityService.getOperatingCountries(), timeout)
     return {
       operatingCountries,
+    }
+  }
+
+  @Get("/retry-strat")
+  @Response<NotFound>(401, "Unauthorized")
+  public async getRetryStratEndpoint(@Query() timeout?: number): Promise<{ success: boolean } | NotFound> {
+    const success = await UtilityService.withTimeout(UtilityService.retries(), timeout)
+
+    if (!success) {
+      this.setStatus(401)
+      return {
+        message: "Unauthorized",
+      }
+    }
+
+    return {
+      success,
     }
   }
 }
