@@ -1,10 +1,10 @@
-// src/app.ts
-
 import bodyParser from "body-parser"
 import cors from "cors"
 import express, { NextFunction, Request, Response } from "express"
+import { logger } from "express-winston"
 import swaggerUi from "swagger-ui-express"
 import { ValidateError } from "tsoa"
+import { format, transports } from "winston"
 
 import { subscribeToValidationProgress } from "./routes/validation/validationController"
 import { RegisterRoutes } from "./tsoa/routes"
@@ -18,6 +18,17 @@ app.use(
 )
 app.use(bodyParser.json())
 app.use(cors())
+
+app.use(
+  logger({
+    transports: [new transports.Console()],
+    format: format.combine(format.colorize(), format.json()),
+    meta: false,
+    msg: "HTTP {{req.method}} {{req.url}}",
+    expressFormat: true,
+    colorize: false,
+  }),
+)
 
 app.use("/docs", swaggerUi.serve, async (_req: Request, res: Response) => {
   return res.send(swaggerUi.generateHTML(await import("./tsoa/swagger.json")))
