@@ -3,6 +3,8 @@ import { DataStore } from "@/engine/data/dataStore"
 const TIMEOUT = 5000
 
 export class UtilityService {
+  static COUNTER = 0
+
   static validateName(name: string, timeout?: number) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -43,6 +45,16 @@ export class UtilityService {
 
   static getOperatingCountries(): string[] {
     return ["Germany", "DE", "United States", "US", "France", "FR"]
+  }
+
+  static retries(): boolean {
+    if (this.COUNTER === 1) {
+      this.COUNTER = 0
+      return true
+    }
+
+    this.COUNTER = 1
+    return false
   }
 
   static withTimeout<T>(value: T, timeout?: number): Promise<T> {

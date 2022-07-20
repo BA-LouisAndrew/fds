@@ -1,4 +1,4 @@
-import { Method, Response as GotResponse } from "got"
+import { HTTPError, Method, Response as GotResponse } from "got"
 import jp from "jsonpath"
 
 import { ApiResponse } from "@/types/api"
@@ -48,8 +48,20 @@ export class Agent {
         },
       }
     } catch (e) {
-      console.log(e)
-      // Handle error here
+      if (e instanceof HTTPError) {
+        const { statusCode, body, statusMessage, rawBody, retryCount } = e.response
+        return {
+          error: null,
+          data: {
+            statusCode,
+            statusMessage,
+            rawBody,
+            retryCount,
+            body: this.parseResponseBody(body),
+          },
+        }
+      }
+
       return {
         error: {
           message: e,

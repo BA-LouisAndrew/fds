@@ -12,6 +12,10 @@ describe("Validation engine: Validate rule set", () => {
     await initStore("in-memory").init()
   })
 
+  afterEach(() => {
+    nock.cleanAll()
+  })
+
   it("returns the correct value if the validation for both rules succeed", async () => {
     nock("http://localhost:5001").get("/validate").reply(200)
     nock("http://localhost:5003").post("/validate").reply(201, { message: "Operation successful" })
@@ -67,5 +71,32 @@ describe("Validation engine: Validate rule set", () => {
     expect(result.passedChecks.length).toEqual(0)
     expect(result.failedChecks.length).toEqual(1)
     expect(result.skippedChecks.length).toEqual(1)
+  })
+
+  it("returns the correct value when evaluating a failed response", async () => {
+    nock("http://localhost:5001").get("/validate").reply(401)
+
+    const result = await new ValidationEngine()
+      .setRuleset([
+        {
+          skip: false,
+          condition: {
+            path: "$.response.statusCode",
+            operator: "eq",
+            type: "number",
+            value: 401,
+            failMessage: "Status code doesn't equal to 401, got $",
+          },
+          name: "sample-rule",
+          priority: 0,
+          endpoint: "http://localhost:5001/validate",
+          method: "GET",
+          failScore: 0.1,
+        },
+      ])
+      .validateRuleset({})
+
+    expect(result.fraudScore).toEqual(0)
+    expect(result.passedChecks.length).toEqual(1)
   })
 })
