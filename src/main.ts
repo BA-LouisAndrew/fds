@@ -27,7 +27,6 @@ const CONFIG: Config = {
 
   await database.init()
   await store.init()
-  await notification.init(CONFIG.notificationUrl)
 
   if (CONFIG.enableNotification && CONFIG.rabbitManagementUi) {
     const isRabbitAvailable = await waitForRabbit(CONFIG.rabbitManagementUi)
@@ -37,6 +36,8 @@ const CONFIG: Config = {
       throw new Error("> Rabbit is not available!")
     }
   }
+
+  await notification.init(CONFIG.notificationUrl)
 
   if (CONFIG.dataStore === "redis") {
     await RestartEngine.runSuspendedValidations()
