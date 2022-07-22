@@ -12,3 +12,6 @@ export const waitForRabbit = async (url: string) => {
     timeout: 5 * 60 * 1000,
   })
 }
+
+
+export const delay = (timeout: number) => new Promise(res => setTimeout(res, timeout))

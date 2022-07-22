@@ -7,7 +7,7 @@ import { Agent } from "./engine/request/agent"
 import { createContext as createRequestContext } from "./engine/request/context"
 import { RestartEngine } from "./engine/restartEngine"
 import { Config } from "./types/config"
-import { waitForRabbit } from "./utils/waitForRabbit"
+import { delay, waitForRabbit } from "./utils/waitForRabbit"
 
 const port = process.env.PORT || 8000
 const CONFIG: Config = {
@@ -31,6 +31,8 @@ const CONFIG: Config = {
 
   if (CONFIG.enableNotification && CONFIG.rabbitManagementUi) {
     const isRabbitAvailable = await waitForRabbit(CONFIG.rabbitManagementUi)
+    await delay(1500)
+
     if (!isRabbitAvailable) {
       throw new Error("> Rabbit is not available!")
     }
